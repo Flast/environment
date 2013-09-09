@@ -1,0 +1,10 @@
+error() {
+	echo "$*" >&2
+}
+
+exists_or_die() {
+	if [ "$1" ] && [ ! -d "$1" ]; then
+		echo "fatal: The directory \`$1' does not exist."
+		exit 1
+	fi
+}

@@ -1,8 +1,10 @@
-#!/bin/bash
+#!/bin/sh
+
+. $(dirname $0)/functions
 
 # -*- user defined options -*-
-PROG_SUFFIX="-"				# set valid program suffix
-PREFIX="/path/to/prefix"	# set valid prefix
+PROG_SUFFIX=""
+PREFIX="/path/to/prefix"
 SRCDIR="/path/to/source"
 
 #CC="gcc"
@@ -79,19 +81,6 @@ fi
 DEFAULT_FLAGS="-O4 -mtune=native"
 # }}}
 
-# utilities {{{
-error() {
-	echo "$*" >&2
-}
-
-exists_or_die() {
-	if [ "$1" ] && [ ! -d "$1" ]; then
-		echo "fatal: The directory \`$1' does not exist."
-		exit 1
-	fi
-}
-# }}}
-
 # sanitize {{{
 exists_or_die $SRCDIR
 if [ ! -x "$SRCDIR/configure" ]; then
@@ -103,7 +92,6 @@ exists_or_die $CLOOGISL
 exists_or_die $PPL
 # }}}
 
-echo \
 $SRCDIR/configure $CONFIGURES $USER					\
 	$INTERNAL_CC CFLAGS="$DEFAULT_FLAGS $FLAGS"		\
 	$INTERNAL_CXX CXXFLAGS="$DEFAULT_FLAGS $FLAGS"	\
