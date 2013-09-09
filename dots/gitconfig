@@ -1,7 +1,7 @@
 # vim: noexpandtab ts=4 sw=4
 [core]
 	editor = vim
-	pager = LESS=-R less
+#	pager = LESS=-R less
 [user]
 	name = Kohei Takahashi
 	email = flast@flast.jp

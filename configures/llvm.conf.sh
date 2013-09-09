@@ -2,7 +2,7 @@
 
 . $(dirname $0)/functions
 
-PREFIX="/path/to/prefix"
+#PREFIX="/path/to/prefix"
 SRCDIR="$1"
 
 #CC="clang"
@@ -24,7 +24,7 @@ BUILD="
 # sanitize {{{
 exists_or_die $SRCDIR
 
-if [ "$#" -e 1 ]; then
+if [ "$#" -lt 1 ]; then
 	echo "usage: $0 /path/to/llvm [opts...]"
 	exit 1
 fi

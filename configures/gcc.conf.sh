@@ -2,23 +2,12 @@
 
 . $(dirname $0)/functions
 
-# -*- user defined options -*-
-PROG_SUFFIX=""
-PREFIX="/path/to/prefix"
-SRCDIR="/path/to/source"
-
-#CC="gcc"
-#CXX="g++"
-#FLAGS=""
-LANGS="c,c++"
-
-#WITHCLOOGISL="true"
-CLOOGISL="/path/to/cloog"
-#WITHPPL="true"
-PPL="/path/to/ppl"
-
-USER="
-"
+if [ -f "${VARPATH:+$VARPATH/}./gcc.var.sh" ]; then
+	. ${VARPATH:+$VARPATH/}./gcc.var.sh
+else
+	error "fatal: gcc.var.sh does not found"
+	exit 1
+fi
 
 # -*- implicit options -*- {{{
 
@@ -48,7 +37,7 @@ WITH="
 	--with-gnu-ld
 	--with-pic
 	--with-sysroot=/
-	--with-build-config=\"lto O3\"
+	--with-build-config=bootstrap-lto
 "
 
 WITHOUT="
