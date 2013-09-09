@@ -1,0 +1,24 @@
+# vim: noexpandtab ts=4 sw=4
+[core]
+	editor = vim
+	pager = LESS=-R less
+[user]
+	name = Kohei Takahashi
+	email = flast@flast.jp
+[color]
+	ui = auto
+[merge]
+	tool = vimdiff
+[alias]
+	st = status -uno
+	ci = commit
+	co = checkout
+	sm = submodule
+#[branch]
+#	autosetuprebase = always
+[svn]
+	pushmergeinfo = true
+[grep]
+	lineNumber = true
+[push]
+	default = simple

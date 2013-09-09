@@ -1,0 +1,18 @@
+set gui=none,tabs
+
+set wildmode=list:full
+
+nmap <C-l> <Esc>
+
+nmap j 3<C-e>
+nmap k 3<C-y>
+nmap <C-j> 30<C-e>
+nmap <C-k> 30<C-y>
+
+nmap ,h <Esc>:noh<CR>
+
+" Escaped command
+nmap <C-z><C-d> :bmark<CR>
+nmap <C-z><C-u> :viewsource<CR>
+
+" vim: ft=vim:

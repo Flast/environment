@@ -1,0 +1,244 @@
+# Author:       Koehi Takahashi (Flast)
+# Last Change:  2012/02/16
+
+# C-dで終了しない
+setopt ignore_eof
+
+# {{{ ヒストリ関係
+HISTFILE=~/.zsh_history
+HISTSIZE=1000
+SAVEHIST=1000
+setopt hist_ignore_dups
+setopt hist_reduce_blanks
+setopt inc_append_history
+setopt share_history
+# }}}
+
+# vim キーバインド
+bindkey -v
+
+#bindkey "^p" push-line
+#bindkey "^h" run-help
+
+# {{{ プロンプト
+_update_prompt() {
+    PROMPT="%U%{[31m%}%M%b:%{[36m%}%~%b$GIT_CURRENT_BRANCH%u
+$ "
+    if [ "$SSH_CLIENT" != "" ]; then
+        local SSH_CLIENT_IP="`echo $SSH_CLIENT | sed 's/\([^ ]*\).*/\1/'`"
+        PROMPT="%U[%{[32m%}$SSH_CLIENT_IP%b]->%{[32m%}%n%b@$PROMPT"
+    fi
+}
+
+PROMPT2="> "
+RPROMPT="[%D %T]"
+SPROMPT="%r is correct? [n,y,a,e]: "
+
+_update_git_branch() {
+    local BRANCH="`git branch 2> /dev/null | sed -n 's/\* \(.*\)/\1/p'`"
+    if [ "$BRANCH" != "" ]; then
+        GIT_CURRENT_BRANCH=":$BRANCH"
+    else
+        GIT_CURRENT_BRANCH=""
+    fi
+}
+# }}}
+
+# 表示色関係
+autoload colors
+colors
+
+setopt auto_pushd
+setopt nolistbeep
+
+setopt list_packed
+
+# {{{ 補完関係
+autoload -U compinit
+compinit
+#autoload predict-on
+#predict-on
+setopt correct
+setopt correctall
+setopt complete_aliases
+setopt noautoremoveslash
+# }}}
+
+# テトリスをロード
+autoload -U tetris
+zle -N tetris
+
+precmd()
+{
+    _update_git_branch
+    _update_prompt
+}
+chpwd()
+{
+    _update_git_branch
+    _update_prompt
+}
+
+# {{{ 共通スクリプトの読み込み
+[ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
+
+if [ -f ~/.common_aliases ]; then
+	. ~/.common_aliases
+elif [ -f ~/svnroot/rc/.common_aliases ]; then
+	. ~/svnroot/rc/.common_aliases
+fi
+
+if [ -f ~/.common_env ]; then
+	. ~/.common_env
+elif [ -f ~/svnroot/rc/.common_env ]; then
+	. ~/svnroot/rc/.common_env
+fi
+# }}}
+
+# {{{ 長門との会話
+zle -N nagato
+function nagato
+{
+    emulate -L zsh
+    if [ ! zle ]; then
+        print -u2 "Use M-x nagato RET to watch nagato and kyon's chat."
+        return 1
+    fi
+    clear
+    nagato-main
+}
+
+function nagato-main
+{
+    # 長門有希のセリフ
+    local nagato1="YUKI.N>見えてる？"
+    local nagato2_1="YUKI.N>そっちの空間とは"
+    local nagato2_2="まだ完全には連結を絶たれていない。"
+    local nagato2_3="でも時間の問題。"
+    local nagato2_4="そうなれば最後。"
+    local nagato3_1="どうにもならない。"
+    local nagato3_2="情報統合思念体は失望している。"
+    local nagato3_3="これで進化の可能性は失われた。"
+    local nagato4_1="涼宮ハルヒは"
+    local nagato4_2="何もない所から"
+    local nagato4_3="情報を生み出す力を"
+    local nagato4_4="持っていた。"
+    local nagato4_5="それは情報統合思念体にも"
+    local nagato4_6="ない力。"
+    local nagato4_7="この情報創造能力を解析すれば"
+    local nagato4_8="自律進化への糸口が"
+    local nagato4_9="つかめるかもしれないと考えた。"
+    local nagato5_1="YUKI.N>あなたに賭ける。"
+    local nagato6_1="もう一度こちら回帰することを"
+    local nagato6_2="我々は望んでいる。"
+    local nagato6_3="涼宮ハルヒは重要な観察対象。"
+    local nagato6_4="わたしという個体も"
+    local nagato6_5="あなたには戻ってきて欲しいと感じている。"
+    local nagato7_1="YUKI.N>また図書館に"
+    local nagato8_1="YUKI.N> sleeping beauty"
+    # YUKI.N> が頭につかないものの頭に必要な空白
+    local nagato_sp="       "
+    # キョンのセリフ
+    # nagato1  が終了後
+    local kyon1="ああ"
+    # nagato2_4 が終了後
+    local kyon2="どうすりゃいい？"
+    # nagato5_1 が終了後
+    local kyon3="何をだよ"
+
+    nagato_print()
+    {
+        local message=$1
+        # set waiting time
+        if [[ $message[0] == "Y" ]] then
+            local time=0.1
+        else
+            local time=0.05
+            printf $nagato_sp
+        fi
+        for (( count=1; count<=$#message; count+=1 ))
+        do
+            # print message
+            printf $message[$count]
+            sleep $time
+            # After ">" is, Japanese. exception exist.
+            if [[ $message[$count] == ">" ]] then
+                if [[ $message[$count+1] != " " ]] then
+                    local time=0.03
+                fi
+            fi
+        done
+        sleep 0.3
+        # linefeed
+        echo ''
+    }
+
+    kyon_print()
+    {
+        local message=$1
+        local time=0.08
+        sleep 0.5
+        for (( count=1; count<=$#message; count+=1 ))
+        do
+            # print message
+            printf $message[$count]
+            sleep $time
+        done
+        sleep 0.5
+        # linefeed
+        echo ''
+    }
+
+    # 実際に実行. 力技. もっと上手くできたろうに・・・.
+    # 画面を綺麗に.
+    clear
+    nagato_print $nagato1
+    kyon_print $kyon1
+    nagato_print $nagato2_1
+    nagato_print $nagato2_2
+    nagato_print $nagato2_3
+    nagato_print $nagato2_4
+    sleep 1.0
+    clear
+    kyon_print $kyon2
+    sleep 1.0
+    clear
+    nagato_print $nagato3_1
+    nagato_print $nagato3_2
+    nagato_print $nagato3_3
+    sleep 1.0
+    clear
+    nagato_print $nagato4_1
+    nagato_print $nagato4_2
+    nagato_print $nagato4_3
+    nagato_print $nagato4_4
+    sleep 0.8
+    nagato_print $nagato4_5
+    nagato_print $nagato4_6
+    nagato_print $nagato4_7
+    nagato_print $nagato4_8
+    nagato_print $nagato4_9
+    sleep 1.0
+    clear
+    nagato_print $nagato5_1
+    sleep 1.0
+    clear
+    kyon_print $kyon3
+    sleep 1.0
+    clear
+    nagato_print $nagato6_1
+    nagato_print $nagato6_2
+    nagato_print $nagato6_3
+    sleep 0.8
+    nagato_print $nagato6_4
+    nagato_print $nagato6_5
+    sleep 1.0
+    clear
+    nagato_print $nagato7_1
+    sleep 2.0
+    clear
+    nagato_print $nagato8_1
+}
+# }}}
+
+# vim: expandtab

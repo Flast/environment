@@ -1,0 +1,140 @@
+# Author:       Koehi Takahashi (Flast)
+# Last Change:  2011/05/26
+
+# {{{ core tools
+if [ -x /usr/bin/dircolors ]; then
+# GNU ls
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+
+	AUTOCOLOR="--color=auto"
+else
+# BSD ls
+	AUTOCOLOR="-G"
+fi
+
+alias grep="grep -n --color=auto"
+
+alias more="more -d"
+
+alias ls="ls $AUTOCOLOR -F"
+
+alias ll="ls -lhi"
+alias la="ls -A"
+alias lla="ll -a"
+
+alias mkdir="mkdir -p"
+
+alias rm="rm -f"
+alias cp="cp -Rf"
+
+alias lns="ln -s"
+
+alias df="df -h"
+alias du="du -ch"
+
+alias tmux="tmux -2"
+
+alias pstree="pstree -alpuU"
+# }}}
+
+alias nkf-euc-jp="nkf --oc=euc-jp"
+alias nkf-sjis="nkf --oc=sjis"
+
+# {{{ ssh
+alias scp="scp -C"
+alias sshx="ssh -X"
+# }}}
+
+alias automake="automake -a --foreign"
+
+# {{{ Compilers
+CFLAGS="-Wall -Wextra -pedantic -g -Wno-unused-parameter"
+
+C99FLAGS="-std=gnu99"
+C11FLAGS="-std=gnu1x"
+CXX11FLAGS="-std=gnu++11"
+CXX1XFLAGS="-std=gnu++1x"
+
+CCFLAGS="$CFLAGS -lm"
+CXXFLAGS="$CFLAGS"
+
+LDFLAGS="--as-needed"
+LINKERFLAGS="--as-needed" # comma separated
+alias ld="ld $LDFLAGS"
+
+alias cpp="cpp $CXX11FLAGS"
+
+GNUFLAGS="-Winit-self -fopenmp -fmax-errors=1 -Wformat=2 -Wl,$LINKERFLAGS"
+alias gcc="gcc $CCFLAGS $C99FLAGS $GNUFLAGS -fcond-mismatch"
+alias gcc11="gcc $CCFLAGS $C11FLAGS $GNUFLAGS -fcond-mismatch"
+alias g++="g++ $CXXFLAGS $GNUFLAGS"
+alias g++11="g++ $CXXFLAGS $CXX11FLAGS $GNUFLAGS"
+alias g++1x="g++ $CXXFLAGS $CXX1XFLAGS $GNUFLAGS"
+
+LLVMFLAGS="-Wl,$LINKERFLAGS --no-undefined" # --no-allow-shlib-undefined
+alias clang="clang $CCFLAGS $C99FLAGS $LLVMFLAGS"
+alias clang11="clang $CCFLAGS $C11FLAGS $LLVMFLAGS"
+alias clang++="clang++ $CXXFLAGS $LLVMFLAGS $LLVMXXFLAGS"
+alias clang++11="clang++ $CXXFLAGS $CXX11FLAGS $LLVMFLAGS $LLVMXXFLAGS"
+
+[ -f /usr/local/cuda/bin/gcc ] && NVCC_BACKEND_CC_PATH="-ccbin=/usr/local/cuda/bin"
+NVCC_CC_FLAGS="-Xcompiler -time,-Wcoverage-mismatch,-fopenmp"
+NVCC_LD_FLAGS="-Xlinker $LINKERFLAGS"
+NVCCFLAGS="$NVCC_CC_FLAGS $NVCC_LD_FLAGS -Xptxas -v"
+alias nvcc="nvcc $NVCC_BACKEND_CC_PATH $NVCCFLAGS"
+
+alias dmd="dmd -w -wi"
+# }}}
+
+alias vim="vim -p"
+
+alias :e="vim"
+alias :o="vim"
+
+alias synergyc='synergyc -f -d NOTE'
+alias synergys='synergys -f -d NOTE'
+
+# network tools {{{
+alias ping='ping -A'
+alias ping6='ping6 -A'
+
+alias traceroute='traceroute -q 1'
+alias traceroute6='traceroute6 -q 1'
+
+alias ssh6='ssh -6'
+
+alias nslookup='nslookup -type=ANY'
+# }}}
+
+# {{{ user-defined shell scripts
+if [ -d ~/svnroot ]; then
+	ROOT=~/svnroot
+	SRC=$ROOT/src
+
+	LISP=$SRC/lisp
+	test -f $LISP/gri.fas && alias gri="clisp $SRC/lisp/gri.fas"
+	test -f $LISP/gri.cl  && alias gri="clisp $SRC/lisp/gri.cl"
+
+	SCRIPT=$SRC/shell-script
+	test -f $SCRIPT/nkf_latex.sh && alias nlatex="sh $SCRIPT/nkf_latex.sh"
+	test -f $SCRIPT/adhoc.sh     && alias adhoc="sh $SCRIPT/adhoc.sh"
+
+	test -f $SCRIPT/update.sh && alias repup="sh $SCRIPT/update.sh"
+	test -f $SCRIPT/build.sh  && alias repbuild="sh $SCRIPT/build.sh"
+
+	PYTHON=$SRC/python
+	test -f $PYTHON/delimit.py && alias delimit="python $PYTHON/delimit.py"
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+	TERM_ICON="/usr/share/icons/gnome/32x32/apps/gnome-terminal.png"
+	if [ -f $TERM_ICON ]; then
+		alias alert='notify-send -i $TERM_ICON "[$?] $(alert_helper)"'
+		alias alert_helper='history|tail -n1|sed -e "s/^\s*[0-9]\+\S*//;s/[;&|]\s*alert$//"'
+	fi
+fi
+# }}}
+
+[ -f ~/.local_aliases ] && . ~/.local_aliases
+
+# vim: ft=zsh
