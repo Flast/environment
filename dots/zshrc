@@ -1,8 +1,5 @@
-# Author:       Koehi Takahashi (Flast)
-# Last Change:  2012/02/16
-
 # C-dで終了しない
-setopt ignore_eof
+#setopt ignore_eof
 
 # {{{ ヒストリ関係
 HISTFILE=~/.zsh_history
