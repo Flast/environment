@@ -22,3 +22,8 @@
 	lineNumber = true
 [push]
 	default = simple
+[imap]
+	host = imaps://imap.flast.jp
+	user = flast
+	folder = INBOX.Drafts
+	sslverify = false
