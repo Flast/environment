@@ -39,6 +39,17 @@ _update_git_branch() {
         GIT_CURRENT_BRANCH=""
     fi
 }
+
+precmd()
+{
+    _update_git_branch
+    _update_prompt
+}
+chpwd()
+{
+    _update_git_branch
+    _update_prompt
+}
 # }}}
 
 # 表示色関係
@@ -61,36 +72,108 @@ setopt complete_aliases
 setopt noautoremoveslash
 # }}}
 
+# environments {{{
+[ "$COLORTERM" = "gnome-terminal" ] \
+    && export OLDTERM="$TERM" \
+    && export TERM="gnome-256color"
+
+export EDITOR=vim
+export SVN_EDITOR=vim
+export HGEDITOR=vim
+
+export LANG=en_GB.utf8
+# }}}
+
+# {{{ alias
+# {{{ core tools
+if [ -x /usr/bin/dircolors ]; then
+# GNU ls
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+
+    AUTOCOLOR="--color=auto"
+else
+# BSD ls
+    AUTOCOLOR="-G"
+fi
+
+alias grep="grep -n --color=auto"
+
+alias more="more -d"
+
+alias ls="ls $AUTOCOLOR -F"
+
+alias ll="ls -lhi"
+alias la="ls -A"
+alias lla="ll -a"
+
+alias mkdir="mkdir -p"
+
+alias rm="rm -r"
+alias mv="mv -i"
+alias cp="cp -Rp"
+
+alias df="df -h"
+alias du="du -ch"
+
+alias tmux="tmux -2"
+
+alias pstree="pstree -alpuU"
+# }}}
+
+alias nkf-euc-jp="nkf --oc=euc-jp"
+alias nkf-sjis="nkf --oc=sjis"
+
+alias automake="automake -a --foreign"
+
+# {{{ Compilers
+CFLAGS="-Wall -Wextra -pedantic -g -Wno-unused-parameter"
+
+CCFLAGS="-std=gnu99 $CFLAGS -lm"
+CXXFLAGS="-std=gnu++11 $CFLAGS"
+
+LDFLAGS="--as-needed"
+LINKERFLAGS="--as-needed" # comma separated
+alias ld="ld $LDFLAGS"
+
+GNUFLAGS="-Winit-self -fopenmp -fmax-errors=1 -Wformat=2 -Wl,$LINKERFLAGS"
+alias gcc="gcc $CCFLAGS $GNUFLAGS -fcond-mismatch"
+alias g++="g++ $CXXFLAGS $GNUFLAGS"
+
+LLVMFLAGS="-Wl,$LINKERFLAGS"
+alias clang="clang $CCFLAGS $C99FLAGS $LLVMFLAGS"
+alias clang++="clang++ $CXXFLAGS $LLVMFLAGS $LLVMXXFLAGS"
+
+NVCC_CC_FLAGS="-Xcompiler -time,-Wcoverage-mismatch,-fopenmp"
+NVCC_LD_FLAGS="-Xlinker $LINKERFLAGS"
+NVCCFLAGS="$NVCC_CC_FLAGS $NVCC_LD_FLAGS -Xptxas -v"
+alias nvcc="nvcc $NVCC_BACKEND_CC_PATH $NVCCFLAGS"
+
+alias dmd="dmd -w -wi"
+# }}}
+
+alias vim="vim -p"
+
+# {{{ network tools
+alias ping='ping -A'
+alias ping6='ping6 -A'
+
+alias traceroute='traceroute -q 1'
+alias traceroute6='traceroute6 -q 1'
+
+alias scp="scp -C"
+alias sshx="ssh -X"
+alias ssh6='ssh -6'
+
+alias nslookup='nslookup -type=ANY'
+# }}}
+
+[ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
+# }}}
+
+# {{{
 # テトリスをロード
 autoload -U tetris
 zle -N tetris
-
-precmd()
-{
-    _update_git_branch
-    _update_prompt
-}
-chpwd()
-{
-    _update_git_branch
-    _update_prompt
-}
-
-# {{{ 共通スクリプトの読み込み
-[ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
-
-if [ -f ~/.common_aliases ]; then
-	. ~/.common_aliases
-elif [ -f ~/svnroot/rc/.common_aliases ]; then
-	. ~/svnroot/rc/.common_aliases
-fi
-
-if [ -f ~/.common_env ]; then
-	. ~/.common_env
-elif [ -f ~/svnroot/rc/.common_env ]; then
-	. ~/svnroot/rc/.common_env
-fi
-# }}}
 
 # {{{ 長門との会話
 zle -N nagato
@@ -236,6 +319,7 @@ function nagato-main
     clear
     nagato_print $nagato8_1
 }
+# }}}
 # }}}
 
 # vim: expandtab
