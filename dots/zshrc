@@ -187,6 +187,8 @@ _zshrc__test_and_alias nslookup nslookup -type=ANY
 [ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
 # }}}
 
+[ -f $HOME/.profile ] && . $HOME/.profile
+
 # テトリスをロード {{{
 autoload -U tetris
 zle -N tetris
