@@ -18,12 +18,12 @@ bindkey -v
 #bindkey "^h" run-help
 
 # {{{ プロンプト
-_update_prompt() {
-    PROMPT="%U%{[31m%}%M%b:%{[36m%}%~%b$GIT_CURRENT_BRANCH%u
+_zshrc__update_prompt() {
+    PROMPT="%U%{[31m%}%M%b:%{[36m%}%~%b$_zshrc__GIT_CURRENT_BRANCH%u
 $ "
     if [ "$SSH_CLIENT" != "" ]; then
-        local SSH_CLIENT_IP="`echo $SSH_CLIENT | sed 's/\([^ ]*\).*/\1/'`"
-        PROMPT="%U[%{[32m%}$SSH_CLIENT_IP%b]->%{[32m%}%n%b@$PROMPT"
+        local client_ip="`echo $SSH_CLIENT | sed 's/\([^ ]*\).*/\1/'`"
+        PROMPT="%U[%{[32m%}$client_ip%b]->%{[32m%}%n%b@$PROMPT"
     fi
 }
 
@@ -31,24 +31,24 @@ PROMPT2="> "
 RPROMPT="[%D %T]"
 SPROMPT="%r is correct? [n,y,a,e]: "
 
-_update_git_branch() {
-    local BRANCH="`git branch 2> /dev/null | sed -n 's/\* \(.*\)/\1/p'`"
-    if [ "$BRANCH" != "" ]; then
-        GIT_CURRENT_BRANCH=":$BRANCH"
+_zshrc__update_git_branch() {
+    local branch="`git branch 2> /dev/null | sed -n 's/\* \(.*\)/\1/p'`"
+    if [ "$branch" != "" ]; then
+        _zshrc__GIT_CURRENT_BRANCH=":$branch"
     else
-        GIT_CURRENT_BRANCH=""
+        _zshrc__GIT_CURRENT_BRANCH=""
     fi
 }
 
 precmd()
 {
-    _update_git_branch
-    _update_prompt
+    _zshrc__update_git_branch
+    _zshrc__update_prompt
 }
 chpwd()
 {
-    _update_git_branch
-    _update_prompt
+    _zshrc__update_git_branch
+    _zshrc__update_prompt
 }
 # }}}
 
@@ -74,7 +74,7 @@ setopt noautoremoveslash
 
 # environments {{{
 [ "$COLORTERM" = "gnome-terminal" ] \
-    && export OLDTERM="$TERM" \
+    && export _zshrc__OLDTERM="$TERM" \
     && export TERM="gnome-256color"
 
 export EDITOR=vim
@@ -85,22 +85,35 @@ export LANG=en_GB.utf8
 # }}}
 
 # {{{ alias
+
+_zshrc__test_executable() {
+    ( which "$1" || alias "$1" ) >/dev/null 2>&1
+}
+
+_zshrc__test_and_alias() {
+    if _zshrc__test_executable "$2"; then
+        local cmd=$1
+        shift 1
+        alias $cmd="$*"
+    fi
+}
+
 # {{{ core tools
 if [ -x /usr/bin/dircolors ]; then
 # GNU ls
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-    AUTOCOLOR="--color=auto"
+    _zshrc__AUTOCOLOR="--color=auto"
 else
 # BSD ls
-    AUTOCOLOR="-G"
+    _zshrc__AUTOCOLOR="-G"
 fi
 
 alias grep="grep -n --color=auto"
 
 alias more="more -d"
 
-alias ls="ls $AUTOCOLOR -F"
+alias ls="ls $_zshrc__AUTOCOLOR -F"
 
 alias ll="ls -lhi"
 alias la="ls -A"
@@ -115,65 +128,69 @@ alias cp="cp -Rp"
 alias df="df -h"
 alias du="du -ch"
 
-alias tmux="tmux -2"
-
 alias pstree="pstree -alpuU"
 # }}}
 
-alias nkf-euc-jp="nkf --oc=euc-jp"
-alias nkf-sjis="nkf --oc=sjis"
+_zshrc__test_and_alias tmux tmux -2
 
-alias automake="automake -a --foreign"
+if _zshrc__test_executable nkf; then
+    alias nkf-euc-jp="nkf --oc=euc-jp"
+    alias nkf-sjis="nkf --oc=sjis"
+fi
+
+_zshrc__test_and_alias automake automake -a --foreign
 
 # {{{ Compilers
-CFLAGS="-Wall -Wextra -pedantic -g -Wno-unused-parameter"
+_zshrc__CFLAGS="-Wall -Wextra -pedantic -g -Wno-unused-parameter"
 
-CCFLAGS="-std=gnu99 $CFLAGS -lm"
-CXXFLAGS="-std=gnu++11 $CFLAGS"
+_zshrc__CCFLAGS="-std=gnu99 $_zshrc__CFLAGS -lm"
+_zshrc__CXXFLAGS="-std=gnu++11 $_zshrc__CFLAGS"
 
-LDFLAGS="--as-needed"
-LINKERFLAGS="--as-needed" # comma separated
-alias ld="ld $LDFLAGS"
+_zshrc__LDFLAGS="--as-needed"
+_zshrc__LINKERFLAGS="--as-needed" # should be comma separated
+_zshrc__test_and_alias ld ld $_zshrc__LDFLAGS
 
-GNUFLAGS="-Winit-self -fopenmp -fmax-errors=1 -Wformat=2 -Wl,$LINKERFLAGS"
-alias gcc="gcc $CCFLAGS $GNUFLAGS -fcond-mismatch"
-alias g++="g++ $CXXFLAGS $GNUFLAGS"
+_zshrc__GNUFLAGS="-Winit-self -fopenmp -fmax-errors=1 -Wformat=2 -Wl,$_zshrc__LINKERFLAGS"
+_zshrc__test_and_alias gcc gcc $_zshrc__CCFLAGS $_zshrc__GNUFLAGS -fcond-mismatch
+_zshrc__test_and_alias g++ g++ $_zshrc__CXXFLAGS $_zshrc__GNUFLAGS
 
-LLVMFLAGS="-Wl,$LINKERFLAGS"
-alias clang="clang $CCFLAGS $C99FLAGS $LLVMFLAGS"
-alias clang++="clang++ $CXXFLAGS $LLVMFLAGS $LLVMXXFLAGS"
+_zshrc__LLVMFLAGS="-Wl,$_zshrc__LINKERFLAGS"
+_zshrc__test_and_alias clang clang $_zshrc__CCFLAGS $_zshrc__C99FLAGS $_zshrc__LLVMFLAGS
+_zshrc__test_and_alias clang++ clang++ $_zshrc__CXXFLAGS $_zshrc__LLVMFLAGS $_zshrc__LLVMXXFLAGS
 
-NVCC_CC_FLAGS="-Xcompiler -time,-Wcoverage-mismatch,-fopenmp"
-NVCC_LD_FLAGS="-Xlinker $LINKERFLAGS"
-NVCCFLAGS="$NVCC_CC_FLAGS $NVCC_LD_FLAGS -Xptxas -v"
-alias nvcc="nvcc $NVCC_BACKEND_CC_PATH $NVCCFLAGS"
+_zshrc__NVCC_CC_FLAGS="-Xcompiler -time,-Wcoverage-mismatch,-fopenmp"
+_zshrc__NVCC_LD_FLAGS="-Xlinker $_zshrc__LINKERFLAGS"
+_zshrc__NVCCFLAGS="$_zshrc__NVCC_CC_FLAGS $_zshrc__NVCC_LD_FLAGS -Xptxas -v"
+_zshrc__test_and_alias nvcc nvcc $_zshrc__NVCC_BACKEND_CC_PATH $_zshrc__NVCCFLAGS
 
-alias dmd="dmd -w -wi"
+_zshrc__test_and_alias dmd dmd -w -wi
 # }}}
 
-alias vim="vim -p"
+_zshrc__test_and_alias vim vim -p
 
 # {{{ network tools
-alias ping='ping -A'
-alias ping6='ping6 -A'
+_zshrc__test_and_alias ping ping -A
+_zshrc__test_and_alias ping6 ping6 -A
 
-alias traceroute='traceroute -q 1'
-alias traceroute6='traceroute6 -q 1'
+_zshrc__test_and_alias traceroute traceroute -q 1
+_zshrc__test_and_alias traceroute6 traceroute6 -q 1
 
-alias scp="scp -C"
-alias sshx="ssh -X"
-alias ssh6='ssh -6'
+_zshrc__test_and_alias scp scp -C
+if _zshrc__test_executable ssh; then
+    alias sshx='ssh -X'
+    alias ssh6='ssh -6'
+fi
 
-alias nslookup='nslookup -type=ANY'
+_zshrc__test_and_alias nslookup nslookup -type=ANY
 # }}}
 
 [ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
 # }}}
 
-# {{{
-# テトリスをロード
+# テトリスをロード {{{
 autoload -U tetris
 zle -N tetris
+# }}}
 
 # {{{ 長門との会話
 ## see: http://d.hatena.ne.jp/khiker/20070805/zsh_nagato
@@ -320,7 +337,6 @@ function nagato-main
     clear
     nagato_print $nagato8_1
 }
-# }}}
 # }}}
 
 # vim: expandtab
