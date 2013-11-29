@@ -176,6 +176,7 @@ autoload -U tetris
 zle -N tetris
 
 # {{{ 長門との会話
+## see: http://d.hatena.ne.jp/khiker/20070805/zsh_nagato
 zle -N nagato
 function nagato
 {
