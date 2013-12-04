@@ -10,10 +10,11 @@
 [merge]
 	tool = vimdiff
 [alias]
-	st = status -uno
-	ci = commit
-	co = checkout
-	sm = submodule
+	st    = status -uno
+	ci    = commit
+	co    = checkout
+	sm    = submodule
+	amend = commit --amend
 #[branch]
 #	autosetuprebase = always
 [svn]
