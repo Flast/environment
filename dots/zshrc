@@ -110,6 +110,7 @@ else
 fi
 
 alias grep="grep -n --color=auto"
+alias egrep="egrep -n --color=auto"
 
 alias more="more -d"
 
