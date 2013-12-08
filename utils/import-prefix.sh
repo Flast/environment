@@ -1,7 +1,5 @@
 #! /bin/sh
 
-echo $0
-
 PREFIX=$1
 shift 1
 
