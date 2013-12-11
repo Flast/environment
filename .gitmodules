@@ -1,0 +1,3 @@
+[submodule "deps/build.extensions"]
+	path = deps/build.extensions
+	url = ../build.extensions.git
