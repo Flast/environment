@@ -1,0 +1,325 @@
+import feature ;
+import modules ;
+import os ;
+import path ;
+import sequence ;
+
+# Boost.Build/Extensions configuration
+#   Load exteions from $HOME/devel/build.extensions by default
+# {{{
+path-constant extensions_root
+  : [ path.make [ sequence.join [ os.home-directories ] /devel/build.extensions ] ]
+  ;
+if ! [ path.exists $(extensions_root) ]
+{
+    import errors ;
+    errors.error
+      : "user-config.jam requires Boost.Build/Extensions ."
+      : "See also: https://github.com/Flast/bulid.extensions ."
+      ;
+}
+modules.load extensions : : $(extensions_root) ;
+# }}}
+import extensions ;
+extensions.import "bind" ;
+extensions.import path ;
+
+path-constant BOOST_ROOT : [ extensions!path.make ~/projects/boost ] ;
+
+# for header cache
+modules.poke : HCACHEMAXAGE : -1 ;
+modules.poke : HCACHEFILE : [ extensions!path.make ~/.hcache ] ;
+
+# common features {{{
+feature.extend <warnings> : extra ;
+
+feature.feature lto : off on : propagated ;
+
+feature.extend <stdlib> : libc++ ;
+
+feature.feature fortify-source : off on : incidental ;
+# }}}
+
+module gcc # compiler specific flags {{{
+{
+    import toolset : flags ;
+
+    flags gcc OPTIONS <lto>on : -flto ;
+    flags gcc.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
+    flags gcc.compile DEFINES <fortify-source>on : _FORTIFY_SOURCE=1 ;
+    #flags gcc.compile.c++ DEFINES <runtime-debugging>on : _GLIBCXX_DEBUG ;
+    flags gcc.compile.c++ USER_OPTIONS <exception-handling>on : -fexceptions ;
+    flags gcc.compile.c++ USER_OPTIONS <exception-handling>off : -fno-exceptions ;
+} # }}}
+module clang-linux # compiler specific flags {{{
+{
+    import toolset : flags ;
+
+    flags clang-linux OPTIONS <lto>on : -flto ;
+    flags clang-linux.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
+    flags clang-linux OPTIONS <stdlib>libc++ : -stdlib=libc++ ;
+}
+module clang-darwin
+{
+    import toolset : flags ;
+
+    flags clang-darwin OPTIONS <lto>on : -flto ;
+    flags clang-darwin.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
+    flags clang-darwin OPTIONS <stdlib>libc++ : -stdlib=libc++ ;
+}
+# }}}
+
+# rule using family {{{
+local rule invocation-command ( toolset )
+{
+    switch $(toolset)
+    {
+        case gcc   : return g++ ;
+        case clang : return clang++ ;
+        case *     : return $(toolset) ;
+    }
+}
+
+local rule using-if-actual ( toolset version ? : options * )
+{
+    local command = $(toolset) ;
+    if ! "default" in $(version)
+    {
+        command = [ invocation-command $(toolset) ] $(version) ;
+    }
+    command = $(command:J=-) ;
+    version ?= default ;
+    local epath = [ os.executable-path ] ;
+    if [ sequence.filter path.exists
+          : [ sequence.transform path.make : $(epath)/$(command) ] ]
+    {
+        using $(toolset) : $(version) : $(command) : $(options) ;
+    }
+}
+
+local rule using-if ( toolset versions * : options * )
+{
+    if $(versions)
+    {
+        for local v in $(versions)
+        {
+            using-if-actual $(toolset) $(v) : $(options) ;
+        }
+    }
+    else
+    {
+        # configure toolset with default
+        using-if-actual $(toolset) : $(options) ;
+    }
+}
+# }}}
+
+constant linker-flags
+  : --as-needed
+  ;
+
+#constant defines
+#  :
+#  ;
+
+# Project requirements operation helpers {{{
+local rule make-conditional ( rulename + )
+{
+    return <conditional>@$(rulename) ;
+}
+
+local rule add-project-requirements ( requirements * )
+{
+    import project ;
+
+    local p = [ project.current ] ;
+    local pa = [ project.attributes [ $(p).project-module ] ] ;
+    $(pa).set requirements : $(requirements) ;
+}
+# }}}
+
+# toolset configurations {{{
+module configuration
+{
+    # .version.<toolset> {{{
+    local rule .version.gcc ( properties * )
+    {
+        import feature ;
+        return [ MATCH ([0-9]+)\.([0-9]+)?\.([0-9]+)?
+                  : [ feature.get-values <toolset-gcc:version> : $(properties) ] ] ;
+    }
+    # }}}
+
+    # error limit {{{
+    rule .error-limit ( toolset : properties * )
+    {
+        local f = <cflags> <cxxflags> ;
+        switch $(toolset)
+        {
+          case gcc : return $(f)-fmax-errors=1  ;
+          case clang : return $(f)-ferror-limit=1 ;
+        }
+    }
+    # }}}
+
+    # diagnostics {{{
+    rule .diagnostics ( toolset : properties * )
+    {
+        switch $(toolset)
+        {
+          case gcc : return [ .diagnostics.gcc $(properties) ] ;
+        }
+    }
+    local rule .diagnostics.gcc ( properties * ) # {{{
+    {
+        local v = [ .version.gcc $(properties) ] ;
+        if ( $(v[1]) > 4 ) || ( $(v[1]) = 4 && $(v[2]) >= 9 )
+        {
+            local f = <cflags> <cxxflags> ;
+            return $(f)-fdiagnostics-color=always $(f)-fdiagnostics-show-caret ;
+        }
+    } # }}}
+    # }}}
+
+    # sanitize {{{
+    rule .sanitize ( toolset : properties * ) # {{{
+    {
+        import feature ;
+
+        local variant = [ feature.get-values <variant> : $(properties) ] ;
+        # Only enabling sanitizer for debug build
+        if $(variant) = debug
+        {
+            switch $(toolset)
+            {
+              case gcc : return [ .sanitize.gcc $(properties) ] ;
+            }
+        }
+    } # }}}
+    local rule .sanitize.gcc ( properties * ) # {{{
+    {
+        local v = [ .version.gcc $(properties) ] ;
+        if ( ( $(v[1]) > 4 ) || ( $(v[1]) = 4 && $(v[2]) >= 8 ) )
+        {
+            local f = <cflags> <cxxflags> ;
+            return $(f)-fsanitize=address <find-shared-library>asan ;
+                   # $(f)-fsanitize=thread  <find-shared-library>tsan ;
+        }
+    } # }}}
+    local rule .sanitize.clang ( properties * ) # {{{
+    {
+        return <linkflags>--no-undefined ;
+        #<cflags>-fsanitize=undefined
+        # older clang use this instead of -fsanitize
+        #<cflags>-fcatch-undefined-behavior
+    } # }}}
+    # }}}
+
+    # Instruction Set Architecture {{{
+    rule .isa ( toolset : properties * )
+    {
+        import feature ;
+        local variant = [ feature.get-values <variant> : $(properties) ] ;
+        if $(variant) = release
+        {
+            switch $(toolset)
+            {
+              case gcc : return [ .isa.gcc $(properties) ] ;
+            }
+        }
+    }
+    rule .isa.gcc ( properties * ) # {{{
+    {
+        return <instruction-set>native ;
+    } # }}}
+    # }}}
+}
+
+# configuration helper {{{
+IMPORT_MODULE configuration ;
+
+rule lookup-configurator ( name : properties * )
+{
+    local t = [ feature.get-values <toolset> : $(properties) ] ;
+    if .$(name) in [ RULENAMES configuration ]
+    {
+        return [ configuration..$(name) $(t) : $(properties) ] ;
+    }
+}
+local rule make-lookup-configurator ( name )
+{
+    return [ extensions!bind.binding lookup-configurator $(name)
+              : [ extensions!bind._1 ] ] ;
+}
+# }}}
+
+add-project-requirements
+    [ make-conditional
+          #[ make-lookup-configurator error-limit ]
+          [ make-lookup-configurator diagnostics ]
+          [ make-lookup-configurator sanitize ]
+          [ make-lookup-configurator isa ]
+        ]
+    <define>$(defines)
+  ;
+
+# using gcc {{{
+using-if gcc default
+    4.6.0 4.6.1 4.6.2 4.6.3 4.6.4
+    4.7.0 4.7.1 4.7.2 4.7.3 4.7.4
+    4.8.0 4.8.1 4.8.2
+    4.9.0
+  : #<warnings>extra
+      <compileflags>-Wextra
+      <compileflags>-pedantic
+    <compileflags>-Wno-unused
+    <compileflags>-Wno-long-long
+    <compileflags>-Winit-self
+    <compileflags>-Wformat=2
+    <cxxflags>-Wlogical-op
+    <cflags>-fcond-mismatch
+    <cflags>-std=gnu99
+    <linkflags>-Wl,$(linker-flags)
+  ;
+# }}}
+
+# using clang {{{
+using-if clang default
+    3.2 3.3
+  : #<warnings>extra
+      <compileflags>-Wextra
+      <compileflags>-pedantic
+    <compileflags>-Wno-unused
+    <compileflags>-Wno-long-long
+    <cflags>-fcond-mismatch
+    <cflags>-std=gnu99
+    <linkflags>-Wl,$(linker-flags)
+  ;
+# }}}
+
+# boost toolsets {{{
+if [ path.exists $(BOOST_ROOT)/tools/boostbook/docbook-xsl-1.75.2 ]
+{
+    using boostbook
+      : $(BOOST_ROOT)/tools/boostbook/docbook-xsl-1.75.2
+      : $(BOOST_ROOT)/tools/boostbook/docbook-dtd-4.2
+      : $(BOOST_ROOT)/tools/boostbook/
+      ;
+}
+if [ path.exists $(BOOST_ROOT)/dist/bin/quickbook ]
+{
+    using quickbook : $(BOOST_ROOT)/dist/bin/quickbook ;
+}
+# }}}
+
+# document generators {{{
+if [ path.exists /usr/bin/xsltproc ]
+{
+    using xsltproc : /usr/bin/xsltproc ;
+}
+if [ path.exists /usr/bin/doxygen ]
+{
+    using doxygen : /usr/bin/doxygen ;
+}
+# }}}
+# }}}
