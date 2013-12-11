@@ -32,13 +32,13 @@ RPROMPT="[%D %T]"
 SPROMPT="%r is correct? [n,y,a,e]: "
 
 _zshrc__update_git_branch() {
-    _zshrc__GIT_CURRENT_BRANCH=""
-
     local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
     if [ "$branch" = "HEAD" ]; then
         _zshrc__GIT_CURRENT_BRANCH=":(detached HEAD)"
-    else
+    elif [ "$branch" ]; then
         _zshrc__GIT_CURRENT_BRANCH=":$branch"
+    else
+        _zshrc__GIT_CURRENT_BRANCH=""
     fi
 }
 
