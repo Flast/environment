@@ -8,7 +8,7 @@ import sequence ;
 #   Load exteions from $HOME/devel/build.extensions by default
 # {{{
 path-constant extensions_root
-  : [ path.make [ sequence.join [ os.home-directories ] /devel/build.extensions ] ]
+  : [ path.make [ sequence.join [ os.home-directories ] /environment/deps/build.extensions ] ]
   ;
 if ! [ path.exists $(extensions_root) ]
 {
