@@ -113,6 +113,7 @@ fi
 
 alias grep="grep -n --color=auto"
 alias egrep="egrep -n --color=auto"
+alias igrep="grep -i"
 
 alias more="more -d"
 
