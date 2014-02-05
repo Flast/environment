@@ -1,6 +1,3 @@
-# C-dで終了しない
-#setopt ignore_eof
-
 # {{{ ヒストリ関係
 HISTFILE=~/.zsh_history
 HISTSIZE=1000
@@ -14,44 +11,63 @@ setopt share_history
 # vim キーバインド
 bindkey -v
 
-#bindkey "^p" push-line
-#bindkey "^h" run-help
-
 # {{{ プロンプト
-_zshrc__update_prompt() {
-    PROMPT="%U%{[31m%}%M%b:%{[36m%}%~%b$_zshrc__GIT_CURRENT_BRANCH%u
-$ "
-    if [ "$SSH_CLIENT" != "" ]; then
-        local client_ip="`echo $SSH_CLIENT | sed 's/\([^ ]*\).*/\1/'`"
-        PROMPT="%U[%{[32m%}$client_ip%b]->%{[32m%}%n%b@$PROMPT"
-    fi
+_reset="%b"
+red="%{[31m%}"
+green="%{[32m%}"
+blue="%{[36m%}"
+
+_zshrc__is_v6() {
+    # TODO
+    true
 }
 
-PROMPT2="> "
-RPROMPT="[%D %T]"
-SPROMPT="%r is correct? [n,y,a,e]: "
+_zshrc__over_ssh() {
+    [[ -n $SSH_CLIENT ]]
+}
+
+_zshrc__prompt_ssh_client() {
+    read a p d < <(echo $SSH_CLIENT)
+
+    a="$red$a$_reset"
+    if _zshrc__is_v6 $a; then
+        a="[$a]"
+    fi
+    echo "$a:$p"
+}
 
 _zshrc__update_git_branch() {
     local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-    if [ "$branch" = "HEAD" ]; then
+    if [[ $branch = HEAD ]]; then
         _zshrc__GIT_CURRENT_BRANCH=":(detached HEAD)"
-    elif [ "$branch" ]; then
+    elif [[ -n $branch ]]; then
         _zshrc__GIT_CURRENT_BRANCH=":$branch"
     else
         _zshrc__GIT_CURRENT_BRANCH=""
     fi
 }
 
-precmd()
-{
+_zshrc__update_prompt() {
+    if _zshrc__over_ssh; then
+        PROMPT="$(_zshrc__prompt_ssh_client) -> $green%n$_reset@$red%M$_reset
+"
+    else
+        PROMPT="$red%m$_reset:"
+    fi
+
     _zshrc__update_git_branch
-    _zshrc__update_prompt
+    PROMPT="$PROMPT%(?.$blue.$red)%~$_reset$_zshrc__GIT_CURRENT_BRANCH"
+
+    PROMPT="%U$PROMPT%u
+%(!.#.\$) "
 }
-chpwd()
-{
-    _zshrc__update_git_branch
-    _zshrc__update_prompt
-}
+
+PROMPT2="> "
+RPROMPT="[%D %T]"
+SPROMPT="%r is correct? [n,y,a,e]: "
+
+precmd() { _zshrc__update_prompt }
+chpwd() { _zshrc__update_prompt }
 # }}}
 
 # 表示色関係
@@ -66,8 +82,6 @@ setopt list_packed
 # {{{ 補完関係
 autoload -U compinit
 compinit
-#autoload predict-on
-#predict-on
 setopt correct
 setopt correctall
 setopt complete_aliases
@@ -88,8 +102,12 @@ export LANG=en_GB.utf8
 
 # {{{ alias
 
+_zshrc__test_binary() {
+    [[ -x $(which --skip-alias "$1") ]] >/dev/null 2>&1
+}
+
 _zshrc__test_executable() {
-    ( which "$1" || alias "$1" ) >/dev/null 2>&1
+    ( alias | which --read-alias --read-functions "$1" ) >/dev/null 2>&1
 }
 
 _zshrc__test_and_alias() {
@@ -101,11 +119,10 @@ _zshrc__test_and_alias() {
 }
 
 # {{{ core tools
-if [ -x /usr/bin/dircolors ]; then
+if _zshrc__test_executable dircolors; then
 # GNU ls
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-
-    _zshrc__AUTOCOLOR="--color=auto"
+    eval "$(dircolors -b $([[ -r ~/.dircolors ]] && echo ~/.dircolors))"
+    _zshrc__AUTOCOLOR="--color=always"
 else
 # BSD ls
     _zshrc__AUTOCOLOR="-G"
@@ -116,6 +133,7 @@ alias egrep="egrep -n --color=auto"
 alias igrep="grep -i"
 
 alias more="more -d"
+alias less="less -R"
 
 alias ls="ls $_zshrc__AUTOCOLOR -F"
 
@@ -183,6 +201,7 @@ _zshrc__test_and_alias scp scp -C
 if _zshrc__test_executable ssh; then
     alias sshx='ssh -X'
     alias ssh6='ssh -6'
+    alias ssh6x='ssh6 -X'
 fi
 
 _zshrc__test_and_alias nslookup nslookup -type=ANY
