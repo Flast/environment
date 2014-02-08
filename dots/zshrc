@@ -122,7 +122,7 @@ _zshrc__test_and_alias() {
 if _zshrc__test_executable dircolors; then
 # GNU ls
     eval "$(dircolors -b $([[ -r ~/.dircolors ]] && echo ~/.dircolors))"
-    _zshrc__AUTOCOLOR="--color=always"
+    _zshrc__AUTOCOLOR="--color=auto"
 else
 # BSD ls
     _zshrc__AUTOCOLOR="-G"
