@@ -75,6 +75,7 @@ autoload colors
 colors
 
 setopt auto_pushd
+setopt nobeep
 setopt nolistbeep
 
 setopt list_packed
