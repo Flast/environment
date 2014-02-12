@@ -87,6 +87,7 @@ setopt correct
 setopt correctall
 setopt complete_aliases
 setopt noautoremoveslash
+setopt nonomatch
 # }}}
 
 # environments {{{
