@@ -3,38 +3,41 @@
 # named by "Yoshihiro Ura <support@fuuzu.net>" - https://github.com/kyubuns/
 
 class Header
-  def initialize(header)
+  def initialize(hb)
     raise "magic mismatch" unless header[257, 5] == 'ustar'
 
-    @name = header[0, 100].rstrip
+    @name = hb[0, 100].rstrip
       .gsub(/[^[:print:]]/) {|m| '#'}
       .gsub(/\//, '+')
       .gsub(/^\./, '_')
-    @size = header[124, 12].oct
-    @type = header[156]
+    @size = hb[124, 12].oct
+    @type = hb[156]
   end
 
   def name() @name end
   def size() @size end
   def type() @type end
+
+  def self.find_next(inb, unit = 512)
+    while true
+      block = inb.read(unit)
+      return nil if block == nil
+
+      i = block.index("ustar")
+      return nil if i == nil
+      return Header.new(block) if i == 257
+
+      puts "info: Index of magic mismatched, try to reindexing..."
+      inb.seek(-(unit + 257 - i), IO::SEEK_CUR)
+    end
+  end
 end
 
 File.open(ARGV[0], 'rb') {|inb|
   while true
-    block = inb.read(512)
-    break if block == nil
+    h = Header.find_next(inb)
+    break if h == nil
 
-    i = block.index("ustar")
-
-    next if i == nil
-
-    if i != 257
-      puts "info: Index of magic mismatched, try to reindexing..."
-      inb.seek(-(512 + 257 - i), IO::SEEK_CUR)
-      next
-    end
-
-    h = Header.new(block)
     File.open(h.name, 'wb') {|outb|
       done = outb.write(inb.read(h.size))
       puts "written #{h.name}"
