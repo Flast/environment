@@ -4,7 +4,7 @@
 
 class Header
   def initialize(hb)
-    raise "magic mismatch" unless header[257, 5] == 'ustar'
+    raise "magic mismatch" unless hb[257, 5] == 'ustar'
 
     @name = hb[0, 100].rstrip
       .gsub(/[^[:print:]]/) {|m| '#'}
@@ -17,6 +17,9 @@ class Header
   def name() @name end
   def size() @size end
   def type() @type end
+
+  def dirname() "" end
+  def basename() name end
 
   def self.find_next(inb, unit = 512)
     while true
