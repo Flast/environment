@@ -6,10 +6,7 @@ class Header
   def initialize(hb)
     raise "magic mismatch" unless hb[257, 5] == 'ustar'
 
-    @name = hb[0, 100].rstrip
-      .gsub(/[^[:print:]]/) {|m| '#'}
-      .gsub(/\//, '+')
-      .gsub(/^\./, '_')
+    @name = hb[0, 100].rstrip.gsub(/[^[:print:]]/) {|m| '#'}
     @size = hb[124, 12].oct
     @type = hb[156]
   end
@@ -18,8 +15,8 @@ class Header
   def size() @size end
   def type() @type end
 
-  def dirname() "" end
-  def basename() name end
+  def dirname() File.dirname(name) end
+  def basename() File.basename(name) end
 
   def self.find_next(inb, unit = 512)
     while true
@@ -36,15 +33,28 @@ class Header
   end
 end
 
+def mkdir_recur(path)
+  return if Dir.exists?(path)
+
+  mkdir_recur(File.dirname(path))
+  Dir.mkdir(path)
+end
+
 File.open(ARGV[0], 'rb') {|inb|
   while true
     h = Header.find_next(inb)
     break if h == nil
 
-    File.open(h.name, 'wb') {|outb|
-      done = outb.write(inb.read(h.size))
-      puts "written #{h.name}"
-      puts "   warning: #{h.size} bytes expected but written #{done} bytes..." if h.size != done
-    }
+    case h.type
+    when "5"
+      puts "info: Skip directory entry: #{h.name}"
+    else
+      mkdir_recur(h.dirname)
+      File.open(h.name, 'wb') {|outb|
+        done = outb.write(inb.read(h.size))
+        puts "written #{h.name}"
+        puts "   warning: #{h.size} bytes expected but written #{done} bytes..." if h.size != done
+      }
+    end
   end
 }
