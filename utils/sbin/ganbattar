@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 #
+# Copyright (c) 2014 Kohei Takahashi <flast@flast.jp>
+# This script distributed under MIT License, for more details see LICENSE.
+#
 # named by "Yoshihiro Ura <support@fuuzu.net>" - https://github.com/kyubuns/
 
 class Header
