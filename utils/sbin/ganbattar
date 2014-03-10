@@ -5,6 +5,12 @@
 #
 # named by "Yoshihiro Ura <support@fuuzu.net>" - https://github.com/kyubuns/
 
+@enable_debug = false
+
+def debug(mes)
+  puts " "*8+"debug: "+mes if @enable_debug
+end
+
 class Header
   def initialize(hb)
     raise "magic mismatch" unless hb[257, 5] == 'ustar'
@@ -43,6 +49,17 @@ def mkdir_recur(path)
   Dir.mkdir(path)
 end
 
+def redirect(from, to, size, unit = 4 * 1024)
+  debug "try to write #{size} bytes"
+  written = 0
+  while size > written
+    w = (size - written) > unit ? unit : (size - written);
+    written += to.write(from.read(w))
+    debug "{write unit: #{w}, total written: #{written}}"
+  end
+  written
+end
+
 File.open(ARGV[0], 'rb') {|inb|
   while true
     h = Header.find_next(inb)
@@ -54,7 +71,7 @@ File.open(ARGV[0], 'rb') {|inb|
     else
       mkdir_recur(h.dirname)
       File.open(h.name, 'wb') {|outb|
-        done = outb.write(inb.read(h.size))
+        done = redirect(inb, outb, h.size)
         puts "written #{h.name}"
         puts "   warning: #{h.size} bytes expected but written #{done} bytes..." if h.size != done
       }
