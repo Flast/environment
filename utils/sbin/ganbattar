@@ -34,11 +34,43 @@ class Header
 
       i = block.index("ustar")
       next if i == nil
-      return Header.new(block) if i == 257
+      return block if i == 257
 
       puts "info: Index of magic mismatched, try to reindexing..."
       inb.seek(-(unit + 257 - i), IO::SEEK_CUR)
     end
+  end
+
+  def self.next(inb, unit = 512)
+    b = find_next(inb, unit)
+    Header.new(b) unless b == nil
+  end
+end
+
+class Entry < Header
+  def initialize(hb, io)
+    super(hb)
+    @io = io
+    @cur = @pos = io.pos
+  end
+
+  def self.next(inb, unit = 512)
+    b = find_next(inb, unit)
+    Entry.new(b, inb) unless b == nil
+  end
+
+  def read(length = nil)
+    preserve = @io.pos
+    @io.pos = @cur
+
+    remain = size - (@cur - @pos)
+    return nil if remain == 0
+    length = remain if length == nil or length > remain
+    b = @io.read(length)
+    @cur = @io.pos
+
+    @io.pos = preserve
+    b
   end
 end
 
@@ -62,18 +94,18 @@ end
 
 File.open(ARGV[0], 'rb') {|inb|
   while true
-    h = Header.find_next(inb)
-    break if h == nil
+    e = Entry.next(inb)
+    break if e == nil
 
-    case h.type
+    case e.type
     when "5"
-      puts "info: Skip directory entry: #{h.name}"
+      puts "info: Skip directory entry: #{e.name}"
     else
-      mkdir_recur(h.dirname)
-      File.open(h.name, 'wb') {|outb|
-        done = redirect(inb, outb, h.size)
-        puts "written #{h.name}"
-        puts "   warning: #{h.size} bytes expected but written #{done} bytes..." if h.size != done
+      mkdir_recur(e.dirname)
+      File.open(e.name, 'wb') {|outb|
+        done = redirect(e, outb, e.size)
+        puts "written #{e.name}"
+        puts "   warning: #{e.size} bytes expected but written #{done} bytes..." if e.size != done
       }
     end
   end
