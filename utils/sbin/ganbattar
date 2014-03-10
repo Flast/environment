@@ -33,7 +33,7 @@ class Header
       return nil if block == nil
 
       i = block.index("ustar")
-      return nil if i == nil
+      next if i == nil
       return Header.new(block) if i == 257
 
       puts "info: Index of magic mismatched, try to reindexing..."
