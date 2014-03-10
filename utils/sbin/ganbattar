@@ -11,13 +11,16 @@ def debug(mes)
   puts " "*8+"debug: "+mes if @enable_debug
 end
 
-class Header
-  def initialize(hb)
+class Entry
+  def initialize(hb, io)
     raise "magic mismatch" unless hb[257, 5] == 'ustar'
 
     @name = hb[0, 100].rstrip.gsub(/[^[:print:]]/) {|m| '#'}
     @size = hb[124, 12].oct
     @type = hb[156]
+
+    @io = io
+    @cur = @pos = io.pos
   end
 
   def name() @name end
@@ -27,36 +30,18 @@ class Header
   def dirname() File.dirname(name) end
   def basename() File.basename(name) end
 
-  def self.find_next(inb, unit = 512)
+  def self.next(inb, unit = 512)
     while true
       block = inb.read(unit)
       return nil if block == nil
 
       i = block.index("ustar")
       next if i == nil
-      return block if i == 257
+      return Entry.new(block, inb) if i == 257
 
       puts "info: Index of magic mismatched, try to reindexing..."
       inb.seek(-(unit + 257 - i), IO::SEEK_CUR)
     end
-  end
-
-  def self.next(inb, unit = 512)
-    b = find_next(inb, unit)
-    Header.new(b) unless b == nil
-  end
-end
-
-class Entry < Header
-  def initialize(hb, io)
-    super(hb)
-    @io = io
-    @cur = @pos = io.pos
-  end
-
-  def self.next(inb, unit = 512)
-    b = find_next(inb, unit)
-    Entry.new(b, inb) unless b == nil
   end
 
   def read(length = nil)
@@ -72,6 +57,17 @@ class Entry < Header
     @io.pos = preserve
     b
   end
+
+  def write_to(to, length = size, unit = 4 * 1024)
+    debug "try to write #{name} with #{length} bytes"
+    written = 0
+    while length > written
+      w = (length - written) > unit ? unit : (length - written);
+      written += to.write(read(w))
+      debug "{write unit: #{w}, total written: #{written}}"
+    end
+    written
+  end
 end
 
 def mkdir_recur(path)
@@ -79,17 +75,6 @@ def mkdir_recur(path)
 
   mkdir_recur(File.dirname(path))
   Dir.mkdir(path)
-end
-
-def redirect(from, to, size, unit = 4 * 1024)
-  debug "try to write #{size} bytes"
-  written = 0
-  while size > written
-    w = (size - written) > unit ? unit : (size - written);
-    written += to.write(from.read(w))
-    debug "{write unit: #{w}, total written: #{written}}"
-  end
-  written
 end
 
 File.open(ARGV[0], 'rb') {|inb|
@@ -103,7 +88,7 @@ File.open(ARGV[0], 'rb') {|inb|
     else
       mkdir_recur(e.dirname)
       File.open(e.name, 'wb') {|outb|
-        done = redirect(e, outb, e.size)
+        done = e.write_to(outb)
         puts "written #{e.name}"
         puts "   warning: #{e.size} bytes expected but written #{done} bytes..." if e.size != done
       }
