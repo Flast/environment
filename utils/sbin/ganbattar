@@ -63,7 +63,9 @@ class Entry
     written = 0
     while length > written
       w = (length - written) > unit ? unit : (length - written);
-      written += to.write(read(w))
+      block = read(w)
+      break if block == nil
+      written += to.write(block)
       debug "{write unit: #{w}, total written: #{written}}"
     end
     written
