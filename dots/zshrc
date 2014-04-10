@@ -178,7 +178,7 @@ _zshrc__LDFLAGS="--as-needed"
 _zshrc__LINKERFLAGS="--as-needed" # should be comma separated
 _zshrc__test_and_alias ld ld $_zshrc__LDFLAGS
 
-_zshrc__GNUFLAGS="-Winit-self -fopenmp -fmax-errors=1 -Wformat=2 -Wl,$_zshrc__LINKERFLAGS"
+_zshrc__GNUFLAGS="-Winit-self -fopenmp -fmax-errors=5 -Wformat=2 -Wl,$_zshrc__LINKERFLAGS"
 _zshrc__test_and_alias gcc gcc $_zshrc__CCFLAGS $_zshrc__GNUFLAGS -fcond-mismatch
 _zshrc__test_and_alias g++ g++ $_zshrc__CXXFLAGS $_zshrc__GNUFLAGS
 
