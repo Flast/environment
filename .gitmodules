@@ -1,3 +1,6 @@
 [submodule "deps/build.extensions"]
 	path = deps/build.extensions
 	url = ../build.extensions.git
+[submodule "deps/genhttplogs"]
+	path = deps/genhttplogs
+	url = https://gist.github.com/2037301.git
