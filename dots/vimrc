@@ -354,6 +354,14 @@ au _Flast FileType ada setl shiftwidth=3 tabstop=3
 au _Flast FileType erlang setl shiftwidth=4 tabstop=8 noexpandtab
 " }}}
 
+" {{{ Jam
+au _Flast BufNewFile,BufRead *.jam setf jam
+au _Flast BufNewFile,BufRead Jamfile setf jam
+au _Flast BufNewFile,BufRead Jamroot setf jam
+au _Flast BufNewFile,BufRead Jamfile.v2 setf jam
+au _Flast BufNewFile,BufRead Jamroot.v2 setf jam
+" }}}
+
 " }}}
 
 " plugins {{{
