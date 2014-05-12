@@ -1,0 +1,4 @@
+#!/bin/sh
+LANG=C
+
+awk '{ print strftime("%T %d/%B/%Y"), $0 }'
