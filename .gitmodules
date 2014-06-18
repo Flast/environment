@@ -4,3 +4,15 @@
 [submodule "deps/genhttplogs"]
 	path = deps/genhttplogs
 	url = https://gist.github.com/2037301.git
+[submodule "deps/proposed/check-soa"]
+	path = deps/proposed/check-soa
+	url = https://github.com/bortzmeyer/check-soa.git
+[submodule "deps/proposed/committia.vim"]
+	path = deps/proposed/committia.vim
+	url = https://github.com/rhysd/committia.vim.git
+[submodule "deps/proposed/netest"]
+	path = deps/proposed/netest
+	url = https://github.com/yuyarin/netest.git
+[submodule "deps/proposed/spark"]
+	path = deps/proposed/spark
+	url = https://github.com/holman/spark.git
