@@ -7,9 +7,6 @@
 [submodule "deps/proposed/check-soa"]
 	path = deps/proposed/check-soa
 	url = https://github.com/bortzmeyer/check-soa.git
-[submodule "deps/proposed/committia.vim"]
-	path = deps/proposed/committia.vim
-	url = https://github.com/rhysd/committia.vim.git
 [submodule "deps/proposed/netest"]
 	path = deps/proposed/netest
 	url = https://github.com/yuyarin/netest.git

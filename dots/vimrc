@@ -37,6 +37,7 @@ Bundle 'thinca/vim-ref'
 " development utilities
 Bundle 'gtags.vim'
 Bundle 'casejump.vim'
+Bundle 'rhysd/committia.vim'
 
 " syntax/indent
 Bundle 'jam.vim'
@@ -388,11 +389,6 @@ nnoremap <C-g>g :Gtags -g
 if expand('%f') =~? 'rfc\d\+'
     setfiletype rfc
 endif
-" }}}
-
-" vim-ref.vim {{{
-let g:ref_rfc_start_linenumber=1
-au _Flast FileType ref-rfc setl ft=rfc
 " }}}
 
 " }}}
