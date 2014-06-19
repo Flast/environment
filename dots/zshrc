@@ -200,8 +200,8 @@ _zshrc__test_and_alias vim vim -p
 _zshrc__test_and_alias ping ping -A
 _zshrc__test_and_alias ping6 ping6 -A
 
-_zshrc__test_and_alias traceroute traceroute -q 1 -A
-_zshrc__test_and_alias traceroute6 traceroute6 -q 1 -A
+_zshrc__test_and_alias traceroute traceroute -q 1 -A -e
+_zshrc__test_and_alias traceroute6 traceroute6 -q 1 -A -e
 
 _zshrc__test_and_alias scp scp -C
 if _zshrc__test_executable ssh; then
