@@ -154,12 +154,10 @@ set fencs=iso-2022-jp-3,iso-2022-jp,utf-8,euc-jp,sjis,utf-16,utf-16le,latin1
 " }}}
 
 " {{{ タブ関係
-if v:version >= 700
-    nnoremap <C-t> :tabedit<CR>
-    nnoremap <C-n> :tabnext<CR>
-    nnoremap <C-p> :tabprevious<CR>
-    set showtabline=2
-endif
+nnoremap <C-t> :tabedit<CR>
+nnoremap <C-n> :tabnext<CR>
+nnoremap <C-p> :tabprevious<CR>
+set showtabline=2
 " }}}
 
 " {{{ quickfix
@@ -177,11 +175,9 @@ nnoremap <C-w>w <C-w>>
 " }}}
 
 " {{{ マーカーでフォールディング
-if v:version >= 701
-    set foldmethod=marker
-    "set foldopen=all
-    "set foldclose=all
-endif
+set foldmethod=marker
+"set foldopen=all
+"set foldclose=all
 " }}}
 
 " {{{ ディレクトリの時の挙動
