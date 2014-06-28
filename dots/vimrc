@@ -154,9 +154,9 @@ set fencs=iso-2022-jp-3,iso-2022-jp,utf-8,euc-jp,sjis,utf-16,utf-16le,latin1
 " }}}
 
 " {{{ タブ関係
-nnoremap <C-t> :tabedit<CR>
-nnoremap <C-n> :tabnext<CR>
-nnoremap <C-p> :tabprevious<CR>
+nnoremap <silent> tt :tabedit<CR>
+nnoremap <silent> tn :tabnext<CR>
+nnoremap <silent> tp :tabprevious<CR>
 set showtabline=2
 " }}}
 
@@ -182,8 +182,8 @@ set foldmethod=marker
 
 " {{{ ディレクトリの時の挙動
 set browsedir=current
-let g:netrw_liststyle=1
-let g:netrw_http_cmd="wget -q -O"
+let g:netrw_liststyle = 1
+let g:netrw_http_cmd = "wget -q -O"
 " }}}
 
 " C-a/C-xのインクリメント/デクリメント
@@ -194,9 +194,6 @@ set nrformats+=alpha
 " バッファのdiff
 set diffopt=filler,vertical
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
-
-" バッファ内の文字数を知る
-nnoremap cn :%s/./&/gn<CR>:noh<CR><C-l>
 
 " バイナリモード
 nnoremap <C-m>b :%!xxd<CR>
@@ -239,10 +236,10 @@ endif
 highlight Targets cterm=underline ctermfg=lightblue guibg=white
 au _Flast VimEnter,WinEnter * match Targets /　/
 
-nmap <Space>m <Plug>(quickhl#toggle)
-nmap <Space>M <Plug>(quickhl#reset)
-vmap <Space>m <Plug>(quickhl#toggle)
-vmap <Space>M <Plug>(quickhl#reset)
+nmap <silent> m <Plug>(quickhl-manual-this)
+vmap <silent> m <Plug>(quickhl-manual-this)
+nmap <silent> M <Plug>(quickhl-manual-reset)
+vmap <silent> M <Plug>(quickhl-manual-reset)
 " }}}
 
 " {{{ rcの自動読み込み
@@ -283,38 +280,31 @@ au _Flast FileType make,gitconfig setl noexpandtab
 
 " サーチパスの設定
 let $LOCAL_INCLUDE = "/usr/local/include"
-au _Flast FileType c,cpp,cpp0x setl path+=$LOCAL_INCLUDE
-let $CXX_INCLUDE = "/usr/local/include/c++/4.7.0"
-au _Flast FileType cpp,cpp0x setl path+=$CXX_INCLUDE
+au _Flast FileType c,cpp setl path+=$LOCAL_INCLUDE
 
-au _Flast FileType c,cpp,cpp0x,cuda,d setl expandtab
+au _Flast FileType c,cpp,cuda,d setl expandtab
 
 " C用のインデントを用いる
-au _Flast FileType c,cpp,cpp0x,cuda,d setl cindent
-au _Flast FileType c,cpp,cpp0x,cuda,d setl cinkeys+=0<,0>
+au _Flast FileType c,cpp,cuda,d setl cindent
+au _Flast FileType c,cpp,cuda,d setl cinkeys+=0<,0>
 
 " 対応する各syntaxをハイライト
-au _Flast FileType c,cpp,cpp0x,cuda setl matchpairs+=?::
+au _Flast FileType c,cpp,cuda setl matchpairs+=?::
 
 " 関数を範囲選択(上が空行の必要あり)
-au _Flast FileType c,cpp,cpp0x,cuda,d nnoremap vf ][v[[?^\s*$<CR>
+au _Flast FileType c,cpp,cuda,d nnoremap vf ][v[[?^\s*$<CR>
 
 " 現在のブロックを範囲選択
-au _Flast FileType c,cpp,cpp0x,cuda,d nnoremap vb ?{<CR>%v%0
+au _Flast FileType c,cpp,cuda,d nnoremap vb ?{<CR>%v%0
 
 " 前後の関数へ移動
-au _Flast FileType c,cpp,cpp0x,cuda,d noremap <C-j> /^\s*$<CR>]]?^\s*$<CR>jz<CR>
-au _Flast FileType c,cpp,cpp0x,cuda,d noremap <C-k> [[?^\s*$<CR>jz<CR>
+au _Flast FileType c,cpp,cuda,d noremap <C-j> /^\s*$<CR>]]?^\s*$<CR>jz<CR>
+au _Flast FileType c,cpp,cuda,d noremap <C-k> [[?^\s*$<CR>jz<CR>
 
 " インデント対象のステートメント
-au _Flast FileType c,cpp,cpp0x,cuda,d setl smartindent cinwords=if,else,for,while,do,struct
-au _Flast FileType cpp,cpp0x,cuda,d setl smartindent cinwords=class,try,catch
-au _Flast FileType d setl smartindent cinwords=foreach,finaly
-
-" casejump.vim
-"   http://www.vim.org/scripts/script.php?script_id=511
-nmap ,n ]s
-nmap ,p [s
+au _Flast FileType c,cpp,cuda,d setl smartindent cinwords=if,else,for,while,do,struct
+au _Flast FileType cpp,cuda,d   setl smartindent cinwords=class,try,catch
+au _Flast FileType d            setl smartindent cinwords=foreach,finaly
 " }}}
 
 " {{{ python
@@ -341,7 +331,7 @@ au _Flast FileType lisp noremap vf ?defun <CR>?(<CR>v%
 
 " {{{ haskell
 au _Flast FileType haskell setl shiftwidth=2
-let g:haskell_indent_if=4
+let g:haskell_indent_if = 4
 " }}}
 
 " {{{ Ada
@@ -353,9 +343,9 @@ au _Flast FileType erlang setl shiftwidth=4 tabstop=8 noexpandtab
 " }}}
 
 " {{{ Jam
-au _Flast BufNewFile,BufRead *.jam setf jam
-au _Flast BufNewFile,BufRead Jamfile setf jam
-au _Flast BufNewFile,BufRead Jamroot setf jam
+au _Flast BufNewFile,BufRead *.jam      setf jam
+au _Flast BufNewFile,BufRead Jamfile    setf jam
+au _Flast BufNewFile,BufRead Jamroot    setf jam
 au _Flast BufNewFile,BufRead Jamfile.v2 setf jam
 au _Flast BufNewFile,BufRead Jamroot.v2 setf jam
 " }}}
@@ -398,5 +388,17 @@ nmap N <Plug>(anzu-N-with-echo)
 nmap * <Plug>(anzu-star-with-echo)
 nmap # <Plug>(anzu-sharp-with-echo)
 " }}}
-"
+
+" casejump.vim {{{
+"   http://www.vim.org/scripts/script.php?script_id=511
+nmap ,n ]s
+nmap ,p [s
+" }}}
+
+" gundo {{{
+let g:gundo_close_on_revert = 1
+
+nnoremap <silent> ;u :GundoShow<CR>
+" }}}
+
 " }}}
