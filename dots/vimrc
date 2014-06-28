@@ -373,13 +373,13 @@ nnoremap <Esc>l :BufExplorer<CR>
 " }}}
 
 " textmanip.vim {{{
-vmap <M-d> <Plug>(Textmanip.duplicate_selection_v)
-nmap <M-d> <Plug>(Textmanip.duplicate_selection_n)
+vmap <M-d> <Plug>(textmanip-duplicate-down)
+nmap <M-d> <Plug>(textmanip-duplicate-down)
 
-vmap <C-j> <Plug>(Textmanip.move_selection_down)
-vmap <C-k> <Plug>(Textmanip.move_selection_up)
-vmap <C-h> <Plug>(Textmanip.move_selection_left)
-vmap <C-l> <Plug>(Textmanip.move_selection_right)
+vmap <C-j> <Plug>(textmanip-move-down)
+vmap <C-k> <Plug>(textmanip-move-up)
+vmap <C-h> <Plug>(textmanip-move-left)
+vmap <C-l> <Plug>(textmanip-move-right)
 " }}}
 
 " {{{ gtags.vim
