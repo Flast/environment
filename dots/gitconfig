@@ -33,3 +33,5 @@
 	sslverify = false
 [format]
 	pretty = fuller
+[rerere]
+	enabled = true
