@@ -211,9 +211,9 @@ set ruler
 set showcmd
 set laststatus=2
 if v:version >= 703
-    set statusline=%<%f\ %m%r%h%q%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V,0x%B
+    set statusline=%<%f\ %m%r%h%q%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%y%=%l,%c%V,0x%B
 else
-    set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V,0x%B
+    set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%y%=%l,%c%V,0x%B
 endif
 
 set cmdheight=1
@@ -258,8 +258,6 @@ endfunction
 " }}}
 
 " ファイルタイプ別設定 {{{
-
-nnoremap ft :set filetype=
 
 " {{{ vim
 au _Flast FileType vim setl shiftwidth=4
@@ -391,8 +389,8 @@ nmap # <Plug>(anzu-sharp-with-echo)
 
 " casejump.vim {{{
 "   http://www.vim.org/scripts/script.php?script_id=511
-nmap ,n ]s
-nmap ,p [s
+nmap ;n ]s
+nmap ;N [s
 " }}}
 
 " gundo {{{
