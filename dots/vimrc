@@ -200,6 +200,9 @@ nnoremap <C-m>b :%!xxd<CR>
 
 " テキストモード
 nnoremap <C-m>t :%!xxd -r<CR>
+
+" リロード
+nnoremap <C-k> :e!<CR>
 " }}}
 
 " スクロールのオフセット {{{
@@ -309,7 +312,7 @@ au _Flast FileType d            setl smartindent cinwords=foreach,finaly
 " インデント対象のステートメント
 au _Flast FileType python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 
-au _Flast FileType python setl shiftwidth=4 noexpandtab
+au _Flast FileType python setl shiftwidth=4
 " }}}
 
 " {{{ lisp
@@ -350,7 +353,7 @@ au _Flast BufNewFile,BufRead Jamroot.v2 setf jam
 
 " }}}
 
-" plugins {{{
+" plugins
 
 " bufexplorer.vim {{{
 nnoremap <Esc>l :BufExplorer<CR>
@@ -397,6 +400,4 @@ nmap ;N [s
 let g:gundo_close_on_revert = 1
 
 nnoremap <silent> ;u :GundoShow<CR>
-" }}}
-
 " }}}
