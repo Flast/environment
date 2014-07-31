@@ -274,6 +274,7 @@ using-if gcc default
       <compileflags>-pedantic
     <compileflags>-Wno-unused
     <compileflags>-Wno-long-long
+    <compileflags>-Wno-c99-extensions
     <compileflags>-Winit-self
     <compileflags>-Wformat=2
     <cxxflags>-Wlogical-op
