@@ -1,0 +1,13 @@
+#!/bin/sh
+
+command=$1
+shift 1
+
+case $command in
+run)
+	docker run --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro "$@"
+	;;
+*)
+	docker $command "$@"
+	;;
+esac
