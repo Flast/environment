@@ -202,7 +202,7 @@ nnoremap <C-m>b :%!xxd<CR>
 nnoremap <C-m>t :%!xxd -r<CR>
 
 " リロード
-nnoremap <C-k> :e!<CR>
+nnoremap <Esc><C-l> :e!<CR>
 " }}}
 
 " スクロールのオフセット {{{
@@ -293,14 +293,14 @@ au _Flast FileType c,cpp,cuda,d setl cinkeys+=0<,0>
 au _Flast FileType c,cpp,cuda setl matchpairs+=?::
 
 " 関数を範囲選択(上が空行の必要あり)
-au _Flast FileType c,cpp,cuda,d nnoremap vf ][v[[?^\s*$<CR>
+"au _Flast FileType c,cpp,cuda,d nnoremap vf ][v[[?^\s*$<CR>
 
 " 現在のブロックを範囲選択
-au _Flast FileType c,cpp,cuda,d nnoremap vb ?{<CR>%v%0
+"au _Flast FileType c,cpp,cuda,d nnoremap vb ?{<CR>%v%0
 
 " 前後の関数へ移動
-au _Flast FileType c,cpp,cuda,d noremap <C-j> /^\s*$<CR>]]?^\s*$<CR>jz<CR>
-au _Flast FileType c,cpp,cuda,d noremap <C-k> [[?^\s*$<CR>jz<CR>
+au _Flast FileType c,cpp,cuda,d nnoremap <C-j> /^\s*$<CR>]]?^\s*$<CR>jz<CR>
+au _Flast FileType c,cpp,cuda,d nnoremap <C-k> [[?^\s*$<CR>jz<CR>
 
 " インデント対象のステートメント
 au _Flast FileType c,cpp,cuda,d setl smartindent cinwords=if,else,for,while,do,struct
@@ -320,8 +320,8 @@ au _Flast FileType lisp setl nocindent lisp
 au _Flast FileType lisp setl showmatch
 
 " 前後の関数、マクロ、パッケージ、クラスへ移動
-au _Flast FileType lisp noremap <C-j> j/defun \\|defmacro \\|defpackage \\|defclass <CR>z<CR>
-au _Flast FileType lisp noremap <C-k> ?defun \\|defmacro \\|defpackage \\|defclass <CR>z<CR>
+au _Flast FileType lisp nnoremap <C-j> j/defun \\|defmacro \\|defpackage \\|defclass <CR>z<CR>
+au _Flast FileType lisp nnoremap <C-k> ?defun \\|defmacro \\|defpackage \\|defclass <CR>z<CR>
 
 " 現在のブロックを範囲選択
 au _Flast FileType lisp noremap vb ?(<CR>v%
@@ -356,7 +356,7 @@ au _Flast BufNewFile,BufRead Jamroot.v2 setf jam
 " plugins
 
 " bufexplorer.vim {{{
-nnoremap <Esc>l :BufExplorer<CR>
+nnoremap <silent> <Esc>l :BufExplorer<CR>
 " }}}
 
 " textmanip.vim {{{
