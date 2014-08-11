@@ -3,8 +3,9 @@ maintainer Kohei Takahashi <flast@flast.jp>
 env container docker
 user root
 
+# Install python for ansible
 run yum -y upgrade ;\
-    yum -y install systemd openssh-server ;\
+    yum -y install systemd openssh-server python ;\
     yum clean all
 
 # workaround for systemd
