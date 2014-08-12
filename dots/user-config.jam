@@ -274,7 +274,6 @@ using-if gcc default
       <compileflags>-pedantic
     <compileflags>-Wno-unused
     <compileflags>-Wno-long-long
-    <compileflags>-Wno-c99-extensions
     <compileflags>-Winit-self
     <compileflags>-Wformat=2
     <cxxflags>-Wlogical-op
@@ -294,6 +293,7 @@ using-if clang default
     <compileflags>-Wno-long-long
     <cflags>-fcond-mismatch
     <cflags>-std=gnu99
+    <cxxflags>-Wno-c99-extensions
     <linkflags>-Wl,$(linker-flags)
   ;
 # }}}
