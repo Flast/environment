@@ -3,9 +3,7 @@ maintainer Kohei Takahashi <flast@flast.jp>
 env container docker
 user root
 
-# Install python for ansible
-run yum -y upgrade ;\
-    yum -y install systemd openssh-server python ;\
+run yum -y install systemd openssh ;\
     yum clean all
 
 # workaround for systemd
@@ -23,7 +21,7 @@ volume /sys/fs/cgroup
 
 cmd /usr/sbin/init
 
-run ssh-keygen -N "" -t rsa   -f /etc/ssh/ssh_host_rsa_key ;\
-    ssh-keygen -N "" -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key ;\
-    install -d -o root -g root -m 700 /root/.ssh ;\
-    systemctl enable sshd.service
+run ssh-keygen -N "" -t rsa     -f /etc/ssh/ssh_host_rsa_key ;\
+    ssh-keygen -N "" -t dsa     -f /etc/ssh/ssh_host_dsa_key ;\
+    ssh-keygen -N "" -t ecdsa   -f /etc/ssh/ssh_host_ecdsa_key ;\
+    install -d -o root -g root -m 700 /root/.ssh
