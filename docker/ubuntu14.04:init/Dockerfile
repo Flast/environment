@@ -14,3 +14,10 @@ run ssh-keygen -N "" -t rsa     -f /etc/ssh/ssh_host_rsa_key ;\
     ssh-keygen -N "" -t ecdsa   -f /etc/ssh/ssh_host_ecdsa_key ;\
     ssh-keygen -N "" -t ed25519 -f /etc/ssh/ssh_host_ed25519_key ;\
     install -d -m 700 -o root -g root /root/.ssh
+
+onbuild run apt-get updatee ;\
+            apt-get -y upgrade ;\
+            apt-get -y install openssh-server ;\
+            apt-get autoclean ;\
+            update-rc.d enable ssh
+onbuild add authorized_keys /root/.ssh/authorized_keys
