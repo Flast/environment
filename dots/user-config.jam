@@ -2,6 +2,7 @@ import feature ;
 import modules ;
 import os ;
 import path ;
+import property ;
 import sequence ;
 
 # Boost.Build/Extensions configuration
@@ -38,6 +39,8 @@ feature.feature lto : off on : propagated ;
 feature.extend <stdlib> : libc++ ;
 
 feature.feature fortify-source : off on : incidental ;
+
+feature.feature sanitize : address thread undefined : propagated ;
 # }}}
 
 module gcc # compiler specific flags {{{
@@ -48,8 +51,16 @@ module gcc # compiler specific flags {{{
     flags gcc.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
     flags gcc.compile DEFINES <fortify-source>on : _FORTIFY_SOURCE=1 ;
     #flags gcc.compile.c++ DEFINES <runtime-debugging>on : _GLIBCXX_DEBUG ;
-    flags gcc.compile.c++ USER_OPTIONS <exception-handling>on : -fexceptions ;
+
+    flags gcc.compile.c++ USER_OPTIONS <exception-handling>on  : -fexceptions ;
     flags gcc.compile.c++ USER_OPTIONS <exception-handling>off : -fno-exceptions ;
+
+    flags gcc.compile OPTIONS   <sanitize>address   : -fsanitize=address ;
+    flags gcc.link    LIBRARIES <sanitize>address   : -lasan ;
+    flags gcc.compile OPTIONS   <sanitize>thread    : -fsanitize=thread ;
+    flags gcc.link    LIBRARIES <sanitize>thread    : -ltsan ;
+    flags gcc.compile OPTIONS   <sanitize>undefined : -fsanitize=undefined ;
+    flags gcc.link    LIBRARIES <sanitize>undefined : -lubsan ;
 } # }}}
 module clang-linux # compiler specific flags {{{
 {
@@ -58,6 +69,13 @@ module clang-linux # compiler specific flags {{{
     flags clang-linux OPTIONS <lto>on : -flto ;
     flags clang-linux.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
     flags clang-linux OPTIONS <stdlib>libc++ : -stdlib=libc++ ;
+
+    flags clang-linux.compile OPTIONS   <sanitize>address   : -fsanitize=address ;
+    flags clang-linux.link    LIBRARIES <sanitize>address   : -lasan ;
+    flags clang-linux.compile OPTIONS   <sanitize>thread    : -fsanitize=thread ;
+    flags clang-linux.link    LIBRARIES <sanitize>thread    : -ltsan ;
+    flags clang-linux.compile OPTIONS   <sanitize>undefined : -fsanitize=undefined ;
+    flags clang-linux.link    LIBRARIES <sanitize>undefined : -lubsan ;
 }
 module clang-darwin
 {
@@ -66,6 +84,39 @@ module clang-darwin
     flags clang-darwin OPTIONS <lto>on : -flto ;
     flags clang-darwin.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
     flags clang-darwin OPTIONS <stdlib>libc++ : -stdlib=libc++ ;
+}
+# }}}
+
+# rule extend variant {{{
+local rule extend-variant ( variant : explicit-properties * )
+{
+    property.validate $(explicit-properties) ;
+
+    local original = [ feature.expand <variant>$(variant) ] ;
+    # Drop first element since feature.expand always put non-expanded property first.
+    original = $(original[2-]) ;
+
+    explicit-properties = [ property.refine $(original)
+        : $(explicit-properties) ] ;
+
+    # explicit-properties = [ property.refine $(inherited)
+    #     : $(explicit-properties) ] ;
+
+    module feature
+    {
+        rule extend-compose ( composite-property : component-properties * )
+        {
+            local feature = $(composite-property:G) ;
+            if ! ( composite in [ attributes $(feature) ] )
+            {
+                import errors ;
+                errors.error "$(feature)" is not a composite feature ;
+            }
+
+            $(composite-property).components += $(component-properties) ;
+        }
+    }
+    feature.extend-compose <variant>$(variant) : $(explicit-properties) ;
 }
 # }}}
 
@@ -113,6 +164,8 @@ local rule using-if ( toolset versions * : options * )
     }
 }
 # }}}
+
+extend-variant release : <instruction-set>native ;
 
 constant linker-flags
   : --as-needed
@@ -180,59 +233,6 @@ module configuration
         }
     } # }}}
     # }}}
-
-    # sanitize {{{
-    rule .sanitize ( toolset : properties * ) # {{{
-    {
-        import feature ;
-
-        local variant = [ feature.get-values <variant> : $(properties) ] ;
-        # Only enabling sanitizer for debug build
-        if $(variant) = debug
-        {
-            switch $(toolset)
-            {
-              case gcc : return [ .sanitize.gcc $(properties) ] ;
-            }
-        }
-    } # }}}
-    local rule .sanitize.gcc ( properties * ) # {{{
-    {
-        local v = [ .version.gcc $(properties) ] ;
-        if ( ( $(v[1]) > 4 ) || ( $(v[1]) = 4 && $(v[2]) >= 8 ) )
-        {
-            local f = <cflags> <cxxflags> ;
-            return $(f)-fsanitize=address <find-shared-library>asan ;
-                   # $(f)-fsanitize=thread  <find-shared-library>tsan ;
-        }
-    } # }}}
-    local rule .sanitize.clang ( properties * ) # {{{
-    {
-        return <linkflags>--no-undefined ;
-        #<cflags>-fsanitize=undefined
-        # older clang use this instead of -fsanitize
-        #<cflags>-fcatch-undefined-behavior
-    } # }}}
-    # }}}
-
-    # Instruction Set Architecture {{{
-    rule .isa ( toolset : properties * )
-    {
-        import feature ;
-        local variant = [ feature.get-values <variant> : $(properties) ] ;
-        if $(variant) = release
-        {
-            switch $(toolset)
-            {
-              case gcc : return [ .isa.gcc $(properties) ] ;
-            }
-        }
-    }
-    rule .isa.gcc ( properties * ) # {{{
-    {
-        return <instruction-set>native ;
-    } # }}}
-    # }}}
 }
 
 # configuration helper {{{
@@ -257,8 +257,6 @@ add-project-requirements
     [ make-conditional
           #[ make-lookup-configurator error-limit ]
           [ make-lookup-configurator diagnostics ]
-          [ make-lookup-configurator sanitize ]
-          [ make-lookup-configurator isa ]
         ]
     <define>$(defines)
   ;
@@ -268,7 +266,8 @@ using-if gcc default
     4.6.0 4.6.1 4.6.2 4.6.3 4.6.4
     4.7.0 4.7.1 4.7.2 4.7.3 4.7.4
     4.8.0 4.8.1 4.8.2 4.8.3
-    4.9.0
+    4.9.0 4.9.1
+    5.0
   : #<warnings>extra
       <compileflags>-Wextra
       <compileflags>-pedantic
@@ -285,7 +284,7 @@ using-if gcc default
 
 # using clang {{{
 using-if clang default
-    3.2 3.3 3.4
+    3.2 3.3 3.4 3.5 3.6
   : #<warnings>extra
       <compileflags>-Wextra
       <compileflags>-pedantic
