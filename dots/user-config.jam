@@ -40,7 +40,7 @@ feature.extend <stdlib> : libc++ ;
 
 feature.feature fortify-source : off on : incidental ;
 
-feature.feature sanitize : address thread undefined : propagated ;
+feature.feature sanitize : no address thread undefined : propagated ;
 # }}}
 
 module gcc # compiler specific flags {{{
