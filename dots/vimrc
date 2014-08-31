@@ -344,11 +344,11 @@ au _Flast FileType erlang setl shiftwidth=4 tabstop=8 noexpandtab
 " }}}
 
 " {{{ Jam
-au _Flast BufNewFile,BufRead *.jam      setf jam
-au _Flast BufNewFile,BufRead Jamfile    setf jam
-au _Flast BufNewFile,BufRead Jamroot    setf jam
-au _Flast BufNewFile,BufRead Jamfile.v2 setf jam
-au _Flast BufNewFile,BufRead Jamroot.v2 setf jam
+au _Flast BufNewFile,BufRead *.jam      setl ft=jam
+au _Flast BufNewFile,BufRead Jamfile    setl ft=jam
+au _Flast BufNewFile,BufRead Jamroot    setl ft=jam
+au _Flast BufNewFile,BufRead Jamfile.v2 setl ft=jam
+au _Flast BufNewFile,BufRead Jamroot.v2 setl ft=jam
 " }}}
 
 " }}}
