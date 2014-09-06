@@ -5,13 +5,23 @@ import path ;
 import property ;
 import sequence ;
 
+local rule path-constant.if-exists ( variable : path ? )
+{
+    path = [ path.make $(path) ] ;
+    if [ path.exists $(path) ]
+    {
+        path-constant $(variable) : $(path) ;
+        return true ;
+    }
+}
+
 # Boost.Build/Extensions configuration
 #   Load exteions from $HOME/devel/build.extensions by default
 # {{{
-path-constant extensions_root
+path-constant.if-exists extensions_root
   : [ path.make [ sequence.join [ os.home-directories ] /environment/deps/build.extensions ] ]
   ;
-if ! [ path.exists $(extensions_root) ]
+if ! $(extensions_root)
 {
     import errors ;
     errors.error
@@ -191,8 +201,8 @@ local rule add-project-requirements ( requirements * )
 }
 # }}}
 
-# toolset configurations {{{
-module configuration
+# toolset configurations
+module configuration # {{{
 {
     # .version.<toolset> {{{
     local rule .version.gcc ( properties * )
@@ -252,6 +262,7 @@ local rule make-lookup-configurator ( name )
               : [ extensions!bind._1 ] ] ;
 }
 # }}}
+# }}}
 
 add-project-requirements
     [ make-conditional
@@ -298,14 +309,18 @@ using-if clang default
 # }}}
 
 # boost toolsets {{{
-if [ path.exists $(BOOST_ROOT)/tools/boostbook/docbook-xsl-1.75.2 ]
+path-constant BOOSTBOOK : $(BOOST_ROOT)/tools/boostbook ;
+
+     if [ path-constant.if-exists docbook-xsl : $(BOOSTBOOK)/docbook-xsl-1.78.1 ] { }
+else if [ path-constant.if-exists docbook-xsl : $(BOOSTBOOK)/docbook-xsl-1.75.2 ] { }
+
+path-constant.if-exists docbook-dtd : $(BOOSTBOOK)/docbook-dtd-4.2 ;
+
+if $(docbook-xsl) && $(docbook-dtd)
 {
-    using boostbook
-      : $(BOOST_ROOT)/tools/boostbook/docbook-xsl-1.75.2
-      : $(BOOST_ROOT)/tools/boostbook/docbook-dtd-4.2
-      : $(BOOST_ROOT)/tools/boostbook/
-      ;
+    using boostbook : $(docbook-xsl) : $(docbook-dtd) : $(BOOSTBOOK) ;
 }
+
 if [ path.exists $(BOOST_ROOT)/dist/bin/quickbook ]
 {
     using quickbook : $(BOOST_ROOT)/dist/bin/quickbook ;
@@ -322,4 +337,4 @@ if [ path.exists /usr/bin/doxygen ]
     using doxygen : /usr/bin/doxygen ;
 }
 # }}}
-# }}}
+
