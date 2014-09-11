@@ -38,7 +38,7 @@ feature.feature lto : off on : propagated ;
 
 feature.extend <stdlib> : libc++ ;
 
-feature.feature fortify-source : off on : incidental ;
+feature.feature fortify-source : off on full : incidental ;
 
 feature.feature sanitize : no address thread undefined : propagated ;
 # }}}
@@ -49,7 +49,8 @@ module gcc # compiler specific flags {{{
 
     flags gcc OPTIONS <lto>on : -flto ;
     flags gcc.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
-    flags gcc.compile DEFINES <fortify-source>on : _FORTIFY_SOURCE=1 ;
+    flags gcc.compile DEFINES <fortify-source>on   : _FORTIFY_SOURCE=1 ;
+    flags gcc.compile DEFINES <fortify-source>full : _FORTIFY_SOURCE=2 ;
     #flags gcc.compile.c++ DEFINES <runtime-debugging>on : _GLIBCXX_DEBUG ;
 
     flags gcc.compile.c++ USER_OPTIONS <exception-handling>on  : -fexceptions ;
@@ -132,7 +133,9 @@ local rule using-if ( toolset versions * : options * )
 }
 # }}}
 
-extensions!feature.extend-variant release : <instruction-set>native ;
+extensions!feature.extend-variant release : <instruction-set>native <fortify-source>on ;
+
+extensions!feature.extend-variant debug : <warnings>extra <fortify-source>full ;
 
 constant linker-flags
   : --as-needed
