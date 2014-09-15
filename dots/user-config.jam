@@ -145,7 +145,7 @@ local rule using-if ( toolset versions * : options * )
 
 extensions!feature.extend-variant release : <instruction-set>native <fortify-source>on ;
 
-extensions!feature.extend-variant debug : <warnings>extra <fortify-source>full ;
+extensions!feature.extend-variant debug : <warnings>extra ;
 
 constant linker-flags
   : --as-needed
