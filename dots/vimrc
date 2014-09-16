@@ -41,7 +41,8 @@ Bundle 'casejump.vim'
 Bundle 'rhysd/committia.vim'
 
 " syntax/indent
-Bundle 'jam.vim'
+Bundle 'Flast/jam.vim'
+Bundle 'danieljames/vim-quickbook'
 Bundle 'grass.vim'
 Bundle 'haskell.vim'
 Bundle 'rfc-syntax'
@@ -341,14 +342,6 @@ au _Flast FileType ada setl shiftwidth=3 tabstop=3
 
 " {{{ Erlang
 au _Flast FileType erlang setl shiftwidth=4 tabstop=8 noexpandtab
-" }}}
-
-" {{{ Jam
-au _Flast BufNewFile,BufRead *.jam      setl ft=jam
-au _Flast BufNewFile,BufRead Jamfile    setl ft=jam
-au _Flast BufNewFile,BufRead Jamroot    setl ft=jam
-au _Flast BufNewFile,BufRead Jamfile.v2 setl ft=jam
-au _Flast BufNewFile,BufRead Jamroot.v2 setl ft=jam
 " }}}
 
 " }}}
