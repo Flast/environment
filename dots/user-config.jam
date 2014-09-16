@@ -291,6 +291,13 @@ if $(docbook-xsl) && $(docbook-dtd)
     using boostbook : $(docbook-xsl) : $(docbook-dtd) : $(BOOSTBOOK) ;
 }
 
+path-constant.if-exists fop : $(BOOSTBOOK)/fop-0.94 ;
+
+if $(fop)
+{
+    using fop : $(fop) ;
+}
+
 if [ path.exists $(BOOST_ROOT)/dist/bin/quickbook ]
 {
     using quickbook : $(BOOST_ROOT)/dist/bin/quickbook ;
