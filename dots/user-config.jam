@@ -80,7 +80,8 @@ module gcc # compiler specific flags {{{
 
     for local f in [ values <std> ]
     {
-        flags gcc OPTIONS <std>$(f) : -std=$(f) ;
+        flags gcc.compile.c++ OPTIONS <std>$(f) : -std=$(f) ;
+        flags gcc.link        OPTIONS <std>$(f) : -std=$(f) ;
     }
 } # }}}
 module clang-linux # compiler specific flags {{{
@@ -101,7 +102,8 @@ module clang-linux # compiler specific flags {{{
 
     for local f in [ values <std> ]
     {
-        flags clang-linux OPTIONS <std>$(f) : -std=$(f) ;
+        flags clang-linux.compile.c++ OPTIONS <std>$(f) : -std=$(f) ;
+        flags clang-linux.link        OPTIONS <std>$(f) : -std=$(f) ;
     }
 }
 module clang-darwin
