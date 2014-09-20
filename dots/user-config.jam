@@ -287,7 +287,6 @@ using-if clang default
       <compileflags>-pedantic
     <compileflags>-Wno-unused
     <compileflags>-Wno-long-long
-    <cflags>-fcond-mismatch
     <cflags>-std=gnu99
     <cxxflags>-Wno-c99-extensions
     <linkflags>-Wl,$(linker-flags)
