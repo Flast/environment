@@ -3,15 +3,19 @@
 #PROG_SUFFIX=""
 #PREFIX="/path/to/prefix"
 SRCDIR="/path/to/source"
+#SYSROOT="/"
 
 #CC="gcc"
 #CXX="g++"
-#FLAGS=""
 LANGS="c,c++"
+#BUILDCONFIG="bootstrap-lto"
+#CFAMILY_FLAGS="-04 -mtune=native"
+#CFLAGS=""
+#CXXFLAGS=""
+#LDFLAGS=""
 
-#WITHCLOOGISL="true"
+#ISL="/path/to/isl"
 #CLOOGISL="/path/to/cloog"
-#WITHPPL="true"
 #PPL="/path/to/ppl"
 
 #USER="

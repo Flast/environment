@@ -9,78 +9,66 @@ else
 	exit 1
 fi
 
-# -*- implicit options -*- {{{
+# -*- implicit options -*-
 
-ENABLES="
-	--enable-silent-rules
+OPTIMIZATION="
+	--with-tune=native
+	--with-gnu-ld
+	${BUILDCONFIG:+--with-build-config=$BUILDCONFIG}
+	--enable-checking=release
+	--enable-libstdcxx-pch
+	--enable-__cxa_atexit
+"
+
+FEATURES="
 	--enable-threads
 	--enable-lto
 	--enable-plugin
-	--enable-clocale=gnu
-	--enable-checking=release
-	--enable-__cxa_atexit
-	--enable-languages=$LANGS,lto
-	--enable-linker-build-id
-	--enable-libstdcxx-pch
-	--enable-libstdcxx-time=yes
 "
 
-DISABLES="
-	--disable-bootstrap
+BUILD="
+	--enable-clocale=gnu
+	--enable-linker-build-id
 	--disable-nls
 	--disable-werror
-"
-
-WITH="
-	--with-system-zlib
-	--with-tune=native
-	--with-gnu-ld
 	--with-pic
-	--with-sysroot=/
-	--with-build-config=bootstrap-lto
 "
 
-WITHOUT="
-	--without-included-gettext
-"
-
-OTHERS="
+MISCS="
+	--enable-languages=$LANGS,lto
+	--enable-silent-rules
+	${SYSROOT:+--with-sysroot=$SYSROOT}
 	${PREFIX:+--prefix=$PREFIX}
 	${PROG_SUFFIX:+--program-suffix=$PROG_SUFFIX}
 "
 
-OPTIONALS="
-	${WITHCLOOGISL:+"
+LIBS="
+	--with-system-zlib
+	--without-included-gettext
+	${ISL:+--with-ls=$ISL}
+	${CLOOGISL:+"
 	--enable-cloog-backend=isl
-	--with-cloog${CLOOGISL:+=$CLOOGISL}
+	--with-cloog=$CLOOGISL
 	"}
-	${WITHPPL:+--with-ppl${PPL:+=$PPL}}
+	${PPL:+--with-ppl=$PPL}
 "
 
-CONFIGURES="$ENABLES $DISABLES $WITH $WITHOUT $OTHERS $OPTIONALS"
-
-if [ "$CC" != "" ]; then
-	INTERNAL_CC="CC=$CC"
-fi
-
-if [ "$CXX" != "" ]; then
-	INTERNAL_CXX="CXX=$CXX"
-fi
-
-DEFAULT_FLAGS="-O4 -mtune=native"
-# }}}
-
-# sanitize {{{
+# sanitize
 exists_or_die $SRCDIR
-if [ ! -x "$SRCDIR/configure" ]; then
+if [[ ! -x "$SRCDIR/configure" ]]; then
 	error "fatal: \`$SRCDIR/configure' is not executable."
 	exit 1
 fi
 
+exists_or_die $ISL
 exists_or_die $CLOOGISL
 exists_or_die $PPL
-# }}}
 
-$SRCDIR/configure $CONFIGURES $USER					\
-	$INTERNAL_CC CFLAGS="$DEFAULT_FLAGS $FLAGS"		\
-	$INTERNAL_CXX CXXFLAGS="$DEFAULT_FLAGS $FLAGS"	\
+$SRCDIR/configure $OPTIMIZATION $FEATURES $MISCS	\
+	$BUILD $LIBS									\
+	$USER											\
+	${CC:+CC="$CC"} ${CXX:+CXX="$CXX"}				\
+	CFLAGS="$CFLAGS $CFAMILY_FLAGS"			\
+	CXXFLAGS="$CXXFLAGS $CFAMILY_FLAGS"		\
+	${LDFLAGS:+LDFLAGS="$LDFLAGS"}					\
+
