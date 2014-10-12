@@ -218,7 +218,13 @@ _zshrc__test_and_alias nslookup nslookup -type=ANY
 
 [ -f $HOME/.profile ] && . $HOME/.profile
 
-[ -d $HOME/.local ] && . $HOME/environment/utils/sbin/import-prefix.sh $HOME/.local
+function import-prefix
+{
+    local env=$HOME/environment
+    [[ -d $env && -d $1 ]] && . $env/utils/sbin/import-prefix.sh $1
+}
+
+import-prefix $HOME/.local
 
 # テトリスをロード {{{
 autoload -U tetris
