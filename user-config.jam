@@ -15,10 +15,10 @@ local rule path-constant.if-exists ( variable : path ? )
 }
 
 # Boost.Build/Extensions configuration
-#   Load exteions from $HOME/build.extensions by default
+#   Load exteions from $HOME/.local/build.extensions by default
 # {{{
 path-constant.if-exists extensions_root
-  : [ path.make [ sequence.join [ os.home-directories ] /build.extensions ] ]
+  : [ path.make [ sequence.join [ os.home-directories ] /.local/build.extensions ] ]
   ;
 if ! $(extensions_root)
 {
