@@ -15,10 +15,10 @@ local rule path-constant.if-exists ( variable : path ? )
 }
 
 # Boost.Build/Extensions configuration
-#   Load exteions from $HOME/devel/build.extensions by default
+#   Load exteions from $HOME/build.extensions by default
 # {{{
 path-constant.if-exists extensions_root
-  : [ path.make [ sequence.join [ os.home-directories ] /environment/deps/build.extensions ] ]
+  : [ path.make [ sequence.join [ os.home-directories ] /build.extensions ] ]
   ;
 if ! $(extensions_root)
 {
@@ -92,19 +92,6 @@ module clang-linux # compiler specific flags {{{
     flags clang-linux OPTIONS <lto>on : -flto ;
     flags clang-linux.compile OPTIONS <warnings>extra : -Wall -Wextra -pedantic ;
     flags clang-linux OPTIONS <stdlib>libc++ : -stdlib=libc++ ;
-
-    flags clang-linux.compile OPTIONS   <sanitize>address   : -fsanitize=address ;
-    flags clang-linux.link    LIBRARIES <sanitize>address   : -lasan ;
-    flags clang-linux.compile OPTIONS   <sanitize>thread    : -fsanitize=thread ;
-    flags clang-linux.link    LIBRARIES <sanitize>thread    : -ltsan ;
-    flags clang-linux.compile OPTIONS   <sanitize>undefined : -fsanitize=undefined ;
-    flags clang-linux.link    LIBRARIES <sanitize>undefined : -lubsan ;
-
-    for local f in [ values <std> ]
-    {
-        flags clang-linux.compile.c++ OPTIONS <std>$(f) : -std=$(f) ;
-        flags clang-linux.link        OPTIONS <std>$(f) : -std=$(f) ;
-    }
 }
 module clang-darwin
 {

@@ -1,15 +1,15 @@
-[submodule "deps/build.extensions"]
-	path = deps/build.extensions
+[submodule ".local/build.extensions"]
+	path = .local/build.extensions
 	url = ../build.extensions.git
-[submodule "deps/genhttplogs"]
-	path = deps/genhttplogs
+[submodule ".local/genhttplogs"]
+	path = .local/genhttplogs
 	url = https://gist.github.com/2037301.git
-[submodule "deps/proposed/check-soa"]
-	path = deps/proposed/check-soa
+[submodule ".local/proposed/check-soa"]
+	path = .local/proposed/check-soa
 	url = https://github.com/bortzmeyer/check-soa.git
-[submodule "deps/proposed/netest"]
-	path = deps/proposed/netest
+[submodule ".local/proposed/netest"]
+	path = .local/proposed/netest
 	url = https://github.com/yuyarin/netest.git
-[submodule "deps/proposed/spark"]
-	path = deps/proposed/spark
+[submodule ".local/proposed/spark"]
+	path = .local/proposed/spark
 	url = https://github.com/holman/spark.git

@@ -124,7 +124,7 @@ _zshrc__test_and_alias() {
     fi
 }
 
-# {{{ core tools
+# {{{ core tools (!= coreutils)
 if _zshrc__test_executable dircolors; then
 # GNU ls
     eval "$(dircolors -b $([[ -r ~/.dircolors ]] && echo ~/.dircolors))"
@@ -213,15 +213,16 @@ fi
 _zshrc__test_and_alias nslookup nslookup -type=ANY
 # }}}
 
+# load site specific aliases
 [ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
 # }}}
 
+# load site specific rc
 [ -f $HOME/.profile ] && . $HOME/.profile
 
 function import-prefix
 {
-    local env=$HOME/environment
-    [[ -d $env && -d $1 ]] && . $env/utils/sbin/import-prefix.sh $1
+    [[ -d $1 ]] && . $HOME/.local/sbin/import-prefix.sh $1
 }
 
 import-prefix $HOME/.local

@@ -151,7 +151,7 @@ set matchpairs+=<:>
 " {{{ エンコーディング
 set enc=utf-8
 set fenc=utf-8
-set fencs=iso-2022-jp-3,iso-2022-jp,utf-8,euc-jp,sjis,utf-16,utf-16le,latin1
+set fencs=utf-8,iso-2022-jp-3,iso-2022-jp,euc-jp,sjis,utf-16,utf-16le,latin1
 " }}}
 
 " {{{ タブ関係
