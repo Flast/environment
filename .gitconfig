@@ -11,7 +11,7 @@
 	tool = vimdiff
 [alias]
 	st      = status -uno
-	ci      = commit -s
+	ci      = commit
 	co      = checkout
 	sm      = submodule
 	amend   = commit --amend
