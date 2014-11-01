@@ -3,6 +3,7 @@
 
 !/.gemrc
 !/.gitconfig
+!/.globalrc
 !/.hgrc
 !/.tmux.conf
 !/.toprc
