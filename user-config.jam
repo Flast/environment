@@ -52,9 +52,9 @@ feature.feature fortify-source : on full : incidental optional ;
 
 feature.feature sanitize : address thread undefined : propagated optional ;
 
-feature.feature std :   c++98   c++03   c++1x   c++11   c++1y   c++14   c++1z
-                      gnu++98 gnu++03 gnu++1x gnu++11 gnu++1y gnu++14 gnu++1z
-                : propagated optional ;
+feature.feature std : gnu++98 gnu++03 gnu++1x gnu++11 gnu++1y gnu++14 gnu++1z
+                        c++98   c++03   c++1x   c++11   c++1y   c++14   c++1z
+                : propagated symmetric ;
 # }}}
 
 module gcc # compiler specific flags {{{
