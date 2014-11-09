@@ -116,17 +116,18 @@ local rule invocation-command ( toolset )
 
 local rule using-if-actual ( toolset version ? : options * )
 {
-    local command = [ invocation-command $(toolset) ] ;
+    import common ;
+
+    local ic = [ invocation-command $(toolset) ] ;
+    local command = $(ic) ;
     if ! "default" in $(version)
     {
         command += $(version) ;
         command = $(command:J=-) ;
     }
-    version ?= default ;
-    local epath = [ os.executable-path ] ;
-    if [ sequence.filter path.exists
-          : [ sequence.transform path.make : $(epath)/$(command) ] ]
+    if [ common.get-invocation-command-nodefault $(toolset) : $(ic) : $(command) ]
     {
+        version ?= default ;
         using $(toolset) : $(version) : $(command) : $(options) ;
     }
 }
