@@ -31,7 +31,7 @@ if ! $(extensions_root)
 modules.load extensions : : $(extensions_root) ;
 # }}}
 import extensions ;
-extensions.import "bind" ;
+extensions.import "bind" : * ;
 extensions.import path ;
 extensions.import feature ;
 
@@ -104,7 +104,23 @@ module clang-darwin
 # }}}
 
 # rule using family {{{
-local rule invocation-command ( toolset )
+local rule get-invocation-command-pattern ( toolset )
+{
+    local version = "" "-[0-9]\.[0-9]" "-[0-9]\.[0-9]\.[0-9]" ;
+    local exe = "" ".exe" ;
+    return $(toolset)$(version)$(exe) ;
+}
+
+local rule get-toolset-command ( toolset )
+{
+    local path = [ path.programs-path ] ;
+    local match = [ path.glob $(path)
+                    : [ get-invocation-command-pattern $(toolset) ] ] ;
+    return [ sequence.unique
+              [ sequence.transform path.basename : $(match) ] : stable ] ;
+}
+
+local rule get-invocation-command ( toolset )
 {
     switch $(toolset)
     {
@@ -114,44 +130,40 @@ local rule invocation-command ( toolset )
     }
 }
 
-local rule using-if-actual ( toolset version ? : options * )
+local rule get-toolset-version ( toolset : command )
 {
-    import common ;
-
-    local ic = [ invocation-command $(toolset) ] ;
-    local command = $(ic) ;
-    if ! "default" in $(version)
+    switch $(toolset)
     {
-        command += $(version) ;
-        command = $(command:J=-) ;
-    }
-    if [ common.get-invocation-command-nodefault $(toolset) : $(ic) : $(command) ]
-    {
-        version ?= default ;
-        using $(toolset) : $(version) : $(command) : $(options) ;
+        case gcc   : return [ MATCH "([0-9].]+)"
+                              : [ SHELL "$(command) -dumpversion" ] ] ;
+        case clang : return [ MATCH "version ([0-9.]+)"
+                              : [ SHELL "$(command) --version" ] ] ;
     }
 }
 
-local rule using-if ( toolset versions * : options * )
+rule using-family ( toolset : options * )
 {
-    if $(versions)
-    {
-        for local v in $(versions)
-        {
-            using-if-actual $(toolset) $(v) : $(options) ;
-        }
-    }
-    else
-    {
-        # configure toolset with default
-        using-if-actual $(toolset) : $(options) ;
-    }
+    local t = [ get-invocation-command $(toolset) ] ;
+    local v = [ get-toolset-version $(toolset) : $(toolset) ] ;
+    ECHO $(t)$(v) ;
+    sequence.transform
+        [ binding using $(toolset)
+          : [ binding get-toolset-version $(toolset) : [ _1 ] ]
+          : [ binding get-invocation-command [ _1 ] ]
+          : $(options) ]
+      : [ get-toolset-command $(toolset) ]
+      ;
 }
 # }}}
 
-extensions!feature.extend-variant release : <instruction-set>native <fortify-source>on ;
+extensions!feature.extend-variant release
+  : <instruction-set>native
+    <fortify-source>on
+  ;
 
-extensions!feature.extend-variant debug : <warnings>extra ;
+extensions!feature.extend-variant debug
+  : <warnings>extra
+  ;
 
 constant linker-flags
   : --as-needed
@@ -234,27 +246,21 @@ rule lookup-configurator ( name : properties * )
 }
 local rule make-lookup-configurator ( name )
 {
-    return [ extensions!bind.binding lookup-configurator $(name)
-              : [ extensions!bind._1 ] ] ;
+    return [ binding lookup-configurator $(name) : [ _1 ] ] ;
 }
 # }}}
 # }}}
 
 add-project-requirements
     [ make-conditional
-          #[ make-lookup-configurator error-limit ]
+          [ make-lookup-configurator error-limit ]
           [ make-lookup-configurator diagnostics ]
         ]
     <define>$(defines)
   ;
 
 # using gcc {{{
-using-if gcc default
-    4.6.0 4.6.1 4.6.2 4.6.3 4.6.4
-    4.7.0 4.7.1 4.7.2 4.7.3 4.7.4
-    4.8.0 4.8.1 4.8.2 4.8.3
-    4.9.0 4.9.1
-    5.0
+using-family gcc
   : #<warnings>extra
       <compileflags>-Wextra
       <compileflags>-pedantic
@@ -270,8 +276,7 @@ using-if gcc default
 # }}}
 
 # using clang {{{
-using-if clang default
-    3.2 3.3 3.4 3.5 3.6
+using-family clang
   : #<warnings>extra
       <compileflags>-Wextra
       <compileflags>-pedantic
