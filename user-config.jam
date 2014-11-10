@@ -104,54 +104,59 @@ module clang-darwin
 # }}}
 
 # rule using family {{{
-local rule get-invocation-command-pattern ( toolset )
+module using
 {
-    local version = "" "-[0-9]\.[0-9]" "-[0-9]\.[0-9]\.[0-9]" ;
-    local exe = "" ".exe" ;
-    return $(toolset)$(version)$(exe) ;
-}
+    import path ;
+    import sequence ;
 
-local rule get-toolset-command ( toolset )
-{
-    local path = [ path.programs-path ] ;
-    local match = [ path.glob $(path)
-                    : [ get-invocation-command-pattern $(toolset) ] ] ;
-    return [ sequence.unique
-              [ sequence.transform path.basename : $(match) ] : stable ] ;
-}
-
-local rule get-invocation-command ( toolset )
-{
-    switch $(toolset)
+    local rule get-invocation-command-pattern ( toolset )
     {
-        case gcc   : return g++ ;
-        case clang : return clang++ ;
-        case *     : return $(toolset) ;
+        local version = "" "-[0-9]\.[0-9]" "-[0-9]\.[0-9]\.[0-9]" ;
+        local exe = "" ".exe" ;
+        return $(toolset)$(version)$(exe) ;
     }
-}
 
-local rule get-toolset-version ( toolset : command )
-{
-    switch $(toolset)
+    rule get-toolset-command ( toolset )
     {
-        case gcc   : return [ MATCH "([0-9].]+)"
-                              : [ SHELL "$(command) -dumpversion" ] ] ;
-        case clang : return [ MATCH "version ([0-9.]+)"
-                              : [ SHELL "$(command) --version" ] ] ;
+        local path = [ path.programs-path ] ;
+        local match = [ path.glob $(path)
+                        : [ get-invocation-command-pattern $(toolset) ] ] ;
+        return [ sequence.unique
+                  [ sequence.transform path.basename : $(match) ] : stable ] ;
+    }
+
+    rule get-invocation-command ( toolset )
+    {
+        switch $(toolset)
+        {
+            case gcc   : return g++ ;
+            case clang : return clang++ ;
+            case *     : return $(toolset) ;
+        }
+    }
+
+    rule get-toolset-version ( toolset : command )
+    {
+        switch $(toolset)
+        {
+            case gcc   : return [ MATCH "([0-9].]+)"
+                                  : [ SHELL "$(command) -dumpversion" ] ] ;
+            case clang : return [ MATCH "version ([0-9.]+)"
+                                  : [ SHELL "$(command) --version" ] ] ;
+        }
     }
 }
 
 rule using-family ( toolset : options * )
 {
-    local t = [ get-invocation-command $(toolset) ] ;
-    local v = [ get-toolset-version $(toolset) : $(toolset) ] ;
-    ECHO $(t)$(v) ;
+    IMPORT_MODULE using ;
+
     sequence.transform
         [ binding using $(toolset)
-          : [ binding get-toolset-version $(toolset) : [ _1 ] ]
-          : [ binding get-invocation-command [ _1 ] ]
+          : [ binding using.get-toolset-version $(toolset) : [ _1 ] ]
+          : [ binding using.get-invocation-command [ _1 ] ]
           : $(options) ]
-      : [ get-toolset-command $(toolset) ]
+      : [ using.get-toolset-command $(toolset) ]
       ;
 }
 # }}}
