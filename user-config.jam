@@ -108,6 +108,8 @@ module using
 {
     import path ;
     import sequence ;
+    import "class" : new ;
+    import set ;
 
     local rule get-invocation-command-pattern ( toolset )
     {
@@ -125,24 +127,40 @@ module using
                   [ sequence.transform path.basename : $(match) ] : stable ] ;
     }
 
-    rule get-invocation-command ( toolset )
+    rule get-invocation-command ( toolset : command )
     {
+        import regex ;
+
         switch $(toolset)
         {
-            case gcc   : return g++ ;
-            case clang : return clang++ ;
+            case gcc   : return [ regex.replace $(command) gcc g++ ] ;
+            case clang : return [ regex.replace $(command) clang clang++ ] ;
             case *     : return $(toolset) ;
         }
     }
 
     rule get-toolset-version ( toolset : command )
     {
+        local version = [ MATCH "$(toolset)-(.*)" : $(command) ] ;
+
         switch $(toolset)
         {
-            case gcc   : return [ MATCH "([0-9].]+)"
-                                  : [ SHELL "$(command) -dumpversion" ] ] ;
-            case clang : return [ MATCH "version ([0-9.]+)"
-                                  : [ SHELL "$(command) --version" ] ] ;
+            case gcc   : version ?= [ MATCH "([0-9.]+)"
+                                      : [ SHELL "$(command) -dumpversion" ] ] ;
+            case clang : version ?= [ MATCH "version ([0-9.]+)"
+                                      : [ SHELL "$(command) --version" ] ] ;
+        }
+        return $(version) ;
+    }
+
+    .conf = [ new set ] ;
+    rule configure ( toolset : version )
+    {
+        local id = "$(toolset)--$(version)" ;
+        if ! [ $(.conf).contains $(id) ]
+        {
+            $(.conf).add $(id) ;
+            return true ;
         }
     }
 }
@@ -151,13 +169,15 @@ rule using-family ( toolset : options * )
 {
     IMPORT_MODULE using ;
 
-    sequence.transform
-        [ binding using $(toolset)
-          : [ binding using.get-toolset-version $(toolset) : [ _1 ] ]
-          : [ binding using.get-invocation-command [ _1 ] ]
-          : $(options) ]
-      : [ using.get-toolset-command $(toolset) ]
-      ;
+    for local c in [ using.get-toolset-command $(toolset) ]
+    {
+        local ver = [ using.get-toolset-version $(toolset) : $(c) ] ;
+        if [ using.configure $(toolset) : $(ver) ]
+        {
+            local cmd = [ using.get-invocation-command $(toolset) : $(c) ] ;
+            using $(toolset) : $(ver) : $(cmd) : $(options) ;
+        }
+    }
 }
 # }}}
 
