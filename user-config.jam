@@ -294,6 +294,7 @@ using-family gcc
     <compileflags>-Winit-self
     <compileflags>-Wformat=2
     <cxxflags>-Wlogical-op
+    <cxxflags>-ftemplate-backtrace-limit=0
     <cflags>-fcond-mismatch
     <cflags>-std=gnu99
     <linkflags>-Wl,$(linker-flags)
