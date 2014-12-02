@@ -91,13 +91,24 @@ setopt nonomatch
 # }}}
 
 # environments {{{
+_zshrc__has_terminfo() {
+    local head=$(echo $1 | sed -n 's/^\(.\).*$/\1/p')
+    [[ -f /usr/share/terminfo/$head/$1 ]]
+}
+_zshrc__has_terminfo_256color() {
+    [[ "$TERM" = $3 ]] && _zshrc__has_terminfo $1
+}
+
 if [[ "$COLORTERM" = "gnome-terminal" ]] \
-|| [[ -f /usr/share/terminfo/g/gnome-256color ]]; then
+|| _zshrc__has_terminfo_256color "gnome-256color" if "gnome-terminal"; then
     export _zshrc__OLDTERM="$TERM"
     export TERM="gnome-256color"
-elif [[ -f /usr/share/terminfo/x/xterm-256color ]]; then
+elif _zshrc__has_terminfo_256color "xterm-256color" if "xterm"; then
     export _zshrc__OLDTERM="$TERM"
     export TERM="xterm-256color"
+elif _zshrc__has_terminfo_256color "screen-256color" if "screen"; then
+    export _zshrc__OLDTERM="$TERM"
+    export TERM="screen-256color"
 fi
 
 export EDITOR=vim
