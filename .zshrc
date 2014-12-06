@@ -91,9 +91,14 @@ setopt nonomatch
 # }}}
 
 # environments {{{
-[ "$COLORTERM" = "gnome-terminal" ] \
-    && export _zshrc__OLDTERM="$TERM" \
-    && export TERM="gnome-256color"
+if [[ "$COLORTERM" = "gnome-terminal" ]] \
+|| [[ -f /usr/share/terminfo/g/gnome-256color ]]; then
+    export _zshrc__OLDTERM="$TERM"
+    export TERM="gnome-256color"
+elif [[ -f /usr/share/terminfo/x/xterm-256color ]]; then
+    export _zshrc__OLDTERM="$TERM"
+    export TERM="xterm-256color"
+fi
 
 export EDITOR=vim
 export SVN_EDITOR=vim
