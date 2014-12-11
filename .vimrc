@@ -34,6 +34,7 @@ Bundle 't9md/vim-quickhl'
 Bundle 'h1mesuke/vim-alignta'
 Bundle 'thinca/vim-ref'
 Bundle 'osyo-manga/vim-anzu'
+Bundle 'gcavallanti/vim-noscrollbar'
 
 " development utilities
 Bundle 'gtags.vim'
@@ -214,11 +215,7 @@ set scrolloff=4
 set ruler
 set showcmd
 set laststatus=2
-if v:version >= 703
-    set statusline=%<%f\ %m%r%h%q%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%y%=%l,%c%V,0x%B
-else
-    set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%y%=%l,%c%V,0x%B
-endif
+set statusline=%<%f\ %m%r%h%q%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%y%=%l,%c%V,0x%B\ %{noscrollbar#statusline(20,'.','#')}
 
 set cmdheight=1
 " }}}
@@ -265,6 +262,7 @@ endfunction
 
 " {{{ vim
 au _Flast FileType vim setl shiftwidth=4
+au _Flast FileType vim setl tw=0
 au _Flast FileType vim setl smartindent cinwords=function,if,else,while
 " }}}
 
