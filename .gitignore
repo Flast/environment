@@ -1,6 +1,8 @@
 *
 !.gitignore
 
+!/selinux
+
 !/.gemrc
 !/.gitconfig
 !/.globalrc

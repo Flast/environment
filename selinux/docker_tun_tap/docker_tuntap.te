@@ -1,0 +1,11 @@
+# Docker w/ tun/tap module for Fedora 20/21
+
+module docker_tuntap 1.0;
+
+require {
+    type svirt_lxc_net_t;
+    class tun_socket { create };
+}
+
+auditallow svirt_lxc_net_t self     : tun_socket create;
+allow      svirt_lxc_net_t self     : tun_socket create;
