@@ -13,3 +13,6 @@
 [submodule ".local/proposed/spark"]
 	path = .local/proposed/spark
 	url = https://github.com/holman/spark.git
+[submodule "latex/documents"]
+	path = latex/documents
+	url = git@bitbucket.org:Flast/documents.git

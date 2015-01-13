@@ -2,6 +2,7 @@
 !.gitignore
 
 !/selinux
+!/latex
 
 !/.gemrc
 !/.gitconfig
