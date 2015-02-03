@@ -48,6 +48,7 @@ Bundle 'grass.vim'
 Bundle 'haskell.vim'
 Bundle 'rfc-syntax'
 Bundle 'Flast/mig.vim'
+Bundle 'stephpy/vim-yaml'
 
 " colorscheme
 Bundle 'xoria256.vim'
