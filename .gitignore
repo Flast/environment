@@ -4,6 +4,7 @@
 !/selinux
 !/latex
 
+!/.gdbinit
 !/.gemrc
 !/.gitconfig
 !/.globalrc
