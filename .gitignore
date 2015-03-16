@@ -20,6 +20,8 @@
 !/.local/genhttplogs
 !/.local/proposed
 
+!/.local/bin/git-empty-dir
+
 !/.local/sbin/ganbattar
 !/.local/sbin/import-prefix.sh
 !/.local/sbin/timedout
