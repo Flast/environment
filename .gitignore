@@ -18,6 +18,7 @@
 
 !/.local/build.extensions
 !/.local/genhttplogs
+!/.local/Gyazo-for-Linux
 !/.local/proposed
 
 !/.local/bin/git-empty-dir
