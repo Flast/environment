@@ -220,11 +220,6 @@ _zshrc__test_and_alias traceroute traceroute -q 1 -A -e
 _zshrc__test_and_alias traceroute6 traceroute6 -q 1 -A -e
 
 _zshrc__test_and_alias scp scp -C
-if _zshrc__test_executable ssh; then
-    alias sshx='ssh -X'
-    alias ssh6='ssh -6'
-    alias ssh6x='ssh6 -X'
-fi
 
 _zshrc__test_and_alias nslookup nslookup -type=ANY
 # }}}

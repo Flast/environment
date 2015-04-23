@@ -40,6 +40,8 @@ Bundle 'gcavallanti/vim-noscrollbar'
 Bundle 'gtags.vim'
 Bundle 'casejump.vim'
 Bundle 'rhysd/committia.vim'
+Bundle 'kana/vim-textobj-user'
+Bundle 'rhysd/vim-textobj-conflict'
 
 " syntax/indent
 Bundle 'Flast/jam.vim'
@@ -206,6 +208,9 @@ nnoremap <C-m>t :%!xxd -r<CR>
 
 " リロード
 nnoremap <Esc><C-l> :e!<CR>
+
+" write via sudo
+nnoremap <silent> sudow :w !sudo tee %<CR>
 " }}}
 
 " スクロールのオフセット {{{
