@@ -210,7 +210,7 @@ nnoremap <C-m>t :%!xxd -r<CR>
 nnoremap <Esc><C-l> :e!<CR>
 
 " write via sudo
-nnoremap <silent> sudow :w !sudo tee %<CR>
+command! Sudow :w !sudo tee %
 " }}}
 
 " スクロールのオフセット {{{
