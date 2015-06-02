@@ -40,8 +40,7 @@ Bundle 'gcavallanti/vim-noscrollbar'
 Bundle 'gtags.vim'
 Bundle 'casejump.vim'
 Bundle 'rhysd/committia.vim'
-Bundle 'kana/vim-textobj-user'
-Bundle 'rhysd/vim-textobj-conflict'
+Bundle 'rhysd/conflict-marker.vim'
 
 " syntax/indent
 Bundle 'Flast/jam.vim'
