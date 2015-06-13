@@ -257,6 +257,9 @@ au _Flast BufWritePost $MYVIMRC nested BundleInstall
 " {{{ 自動でディレクトリを生成する
 au _Flast BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'))
 function! s:auto_mkdir(dir)
+    if !empty(matchstr(a:dir, '^scp://'))
+        return
+    endif
     if !isdirectory(a:dir)
         call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
     endif
