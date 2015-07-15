@@ -222,6 +222,8 @@ _zshrc__test_and_alias traceroute6 traceroute6 -q 1 -A -e
 _zshrc__test_and_alias scp scp -C
 
 _zshrc__test_and_alias nslookup nslookup -type=ANY
+
+_zshrc__test_and_alias unsafe-ssh ssh -o StrictHostKeyChecking=no
 # }}}
 
 # load site specific aliases
