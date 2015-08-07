@@ -41,6 +41,7 @@ Bundle 'gtags.vim'
 Bundle 'casejump.vim'
 Bundle 'rhysd/committia.vim'
 Bundle 'rhysd/conflict-marker.vim'
+Bundle 'mattn/vim-maketable'
 
 " syntax/indent
 Bundle 'Flast/jam.vim'
