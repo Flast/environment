@@ -402,3 +402,9 @@ let g:gundo_close_on_revert = 1
 
 nnoremap <silent> ;u :GundoShow<CR>
 " }}}
+
+" PowerShell {{{
+if expand('%f') =~? '.ps1$'
+    setfiletype ps1
+endif
+" }}}
