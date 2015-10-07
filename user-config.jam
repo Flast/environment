@@ -13,12 +13,33 @@ local rule path-constant.if-exists ( variable : path ? )
         return true ;
     }
 }
+local rule power-path-join ( left * : right * )
+{
+    local .joiner = "/" ;
+    return $(left)$(.joiner)$(right) ;
+}
+local rule find-first-of ( function * : seq * )
+{
+    local result = ;
+    for local e in $(seq)
+    {
+        if [ $(function) $(e) ]
+        {
+            result += $(e) ;
+        }
+    }
+    return $(result[1]) ;
+}
 
 # Boost.Build/Extensions configuration
 #   Load exteions from $HOME/.local/build.extensions by default
 # {{{
-path-constant.if-exists extensions_root
-  : [ path.make [ sequence.join [ os.home-directories ] /.local/build.extensions ] ]
+path-constant extensions_root
+  : [ find-first-of path.exists
+        : [ sequence.transform path.native
+              : [ power-path-join [ os.home-directories ] : .local/build.extensions ]
+              ]
+        ]
   ;
 if ! $(extensions_root)
 {
@@ -317,26 +338,26 @@ using-family clang
 # boost toolsets {{{
 path-constant BOOSTBOOK : $(BOOST_ROOT)/tools/boostbook ;
 
-     if [ path-constant.if-exists docbook-xsl : $(BOOSTBOOK)/docbook-xsl-1.78.1 ] { }
-else if [ path-constant.if-exists docbook-xsl : $(BOOSTBOOK)/docbook-xsl-1.75.2 ] { }
+     if [ path-constant.if-exists docbook-xsl : $(BOOSTBOOK[1])/docbook-xsl-1.78.1 ] { }
+else if [ path-constant.if-exists docbook-xsl : $(BOOSTBOOK[1])/docbook-xsl-1.75.2 ] { }
 
-path-constant.if-exists docbook-dtd : $(BOOSTBOOK)/docbook-dtd-4.2 ;
+path-constant.if-exists docbook-dtd : $(BOOSTBOOK[1])/docbook-dtd-4.2 ;
 
 if $(docbook-xsl) && $(docbook-dtd)
 {
-    using boostbook : $(docbook-xsl) : $(docbook-dtd) : $(BOOSTBOOK) ;
+    using boostbook : $(docbook-xsl) : $(docbook-dtd) : $(BOOSTBOOK[1]) ;
 }
 
-path-constant.if-exists fop : $(BOOSTBOOK)/fop-0.94 ;
+path-constant.if-exists fop : $(BOOSTBOOK[1])/fop-0.94 ;
 
 if $(fop)
 {
     using fop : $(fop) ;
 }
 
-if [ path.exists $(BOOST_ROOT)/dist/bin/quickbook ]
+if [ find-first-of path.exists : $(BOOST_ROOT)/dist/bin/quickbook ]
 {
-    using quickbook : $(BOOST_ROOT)/dist/bin/quickbook ;
+    using quickbook : [ find-first-of path.exists : $(BOOST_ROOT)/dist/bin/quickbook ] ;
 }
 # }}}
 

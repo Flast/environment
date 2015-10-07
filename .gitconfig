@@ -4,6 +4,10 @@
 	pager = LESS=-FRX less
 	preloadindex = true
 	fscache = true
+	safecrlf = true
+	autocrlf = input
+	fileMode = false
+	ignorecase = true
 [user]
 	name = Kohei Takahashi
 	email = flast@flast.jp
