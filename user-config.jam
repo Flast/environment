@@ -6,7 +6,7 @@ import sequence ;
 
 local rule path-constant.if-exists ( variable : path ? )
 {
-    path = [ path.make $(path) ] ;
+    local path = [ path.make $(path) ] ;
     if [ path.exists $(path) ]
     {
         path-constant $(variable) : $(path) ;
