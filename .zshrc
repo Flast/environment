@@ -210,7 +210,7 @@ _zshrc__test_and_alias nvcc nvcc $_zshrc__NVCC_BACKEND_CC_PATH $_zshrc__NVCCFLAG
 _zshrc__test_and_alias dmd dmd -w -wi
 # }}}
 
-_zshrc__test_and_alias boost-formatter sed 's/boost:://g;s/mpl_::bool_<\(false\|true\)>/mpl::\1_/g;s/\(mpl_::na, \)*mpl_::na//g;'
+_zshrc__test_and_alias boost-formatter sed '"s/boost:://g;s/mpl_::bool_<\\(false\\|true\\)>/mpl::\\1_/g;s/\\(mpl_::na, \\)*mpl_::na//g;"'
 
 _zshrc__test_and_alias vim vim -p
 
