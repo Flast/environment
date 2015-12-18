@@ -42,6 +42,7 @@ Bundle 'casejump.vim'
 Bundle 'rhysd/committia.vim'
 Bundle 'rhysd/conflict-marker.vim'
 Bundle 'mattn/vim-maketable'
+Bundle 'hotwatermorning/auto-git-diff'
 
 " syntax/indent
 Bundle 'Flast/jam.vim'
