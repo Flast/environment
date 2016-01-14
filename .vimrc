@@ -42,6 +42,7 @@ Bundle 'casejump.vim'
 Bundle 'rhysd/committia.vim'
 Bundle 'rhysd/conflict-marker.vim'
 Bundle 'mattn/vim-maketable'
+Bundle 'hotwatermorning/auto-git-diff'
 
 " syntax/indent
 Bundle 'Flast/jam.vim'
@@ -222,7 +223,7 @@ set scrolloff=4
 set ruler
 set showcmd
 set laststatus=2
-set statusline=%<%f\ %m%r%h%q%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%y%=%l,%c%V,0x%B\ %{noscrollbar#statusline(20,'.','#')}
+set statusline=%<%f\ %m%r%h%q%w%{'['.(&fenc!=''?&fenc:&enc).(&bomb=='1'?'(B)':'').']['.&ff.']'}%y%=%l,%c%V,0x%B\ %{noscrollbar#statusline(20,'.','#')}
 
 set cmdheight=1
 " }}}

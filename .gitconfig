@@ -21,6 +21,7 @@
 	co      = checkout
 	sm      = submodule
 	amend   = commit --amend
+	fixup   = commit --fixup
 	forward = merge --ff-only
 	glog    = log --graph --stat
 	slog    = log --stat
