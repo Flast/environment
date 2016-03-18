@@ -25,6 +25,8 @@
 	forward = merge --ff-only
 	glog    = log --graph --stat
 	slog    = log --stat
+	root    = rev-parse --show-toplevel
+	dir     = rev-parse --git-dir
 #[branch]
 #	autosetuprebase = always
 [svn]
