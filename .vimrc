@@ -327,6 +327,7 @@ au _Flast FileType erlang setl shiftwidth=4 tabstop=8 noexpandtab
 
 " bufexplorer.vim
 nnoremap <silent> <Esc>l :BufExplorer<CR>
+let g:bufExplorerFindActive=0
 
 " textmanip.vim
 vmap <M-d> <Plug>(textmanip-duplicate-down)
