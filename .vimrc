@@ -1,10 +1,9 @@
-" {{{ auto command
+" auto command
 aug _Flast
 au!
 aug end
-" }}}
 
-" Vundle {{{
+" Vundle
 let s:vundle_dir = $HOME.'/.vim/bundle/vundle'
 let s:initializing_vundle_handler = 0
 let g:vundle_default_git_proto = 'git' "Use git scheme instead of https
@@ -21,9 +20,8 @@ set nocompatible
 filetype off
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
-" }}}
 
-" Vundle list"{{{
+" Vundle list
 " utilities
 Bundle 'gmarik/vundle'
 "Bundle 'NERD_tree'
@@ -61,9 +59,7 @@ if s:initializing_vundle_handler
     echo "initializing\n"
     BundleInstall
 endif
-" "}}}
 
-" {{{
 if has("syntax")
     syntax on
 endif
@@ -101,15 +97,13 @@ set shortmess=aTW
 
 " バックアップファイル関係
 "set backupdir=$HOME/.vimbackup
-" }}}
 
-" {{{ blowfishで暗号化
+" blowfishで暗号化
 if v:version >= 703
     set cryptmethod=blowfish
 endif
-" }}}
 
-" {{{ インデント関係
+" インデント関係
 set tabstop=4
 set shiftwidth=2
 set smarttab
@@ -117,20 +111,18 @@ set expandtab
 set autoindent
 set smartindent
 set copyindent
-" }}}
 
 " カーソル行に下線
 set cursorline
 " カーソル列に縦線
 set cursorcolumn
 
-" {{{ 補完関係
+" 補完関係
 set completeopt=menu,preview
 set wildmenu
 set wildmode=list:longest,full
-" }}}
 
-" {{{ 検索関係
+" 検索関係
 " インクリメンタルサーチ
 set incsearch
 
@@ -152,52 +144,47 @@ set smartcase
 
 " <>をハイライト/ジャンプ対象に
 set matchpairs+=<:>
-" }}}
 
-" {{{ エンコーディング
+" エンコーディング
 set enc=utf-8
 set fenc=utf-8
 set fencs=utf-8,iso-2022-jp-3,iso-2022-jp,euc-jp,sjis,utf-16,utf-16le,latin1
-" }}}
+set ff=dos
+set ffs=dos,unix
 
-" {{{ タブ関係
+" タブ関係
 nnoremap <silent> tt :tabedit<CR>
 nnoremap <silent> tn :tabnext<CR>
 nnoremap <silent> tp :tabprevious<CR>
 set showtabline=2
-" }}}
 
-" {{{ quickfix
+" quickfix
 nnoremap <C-c>n :cn<CR>
 nnoremap <C-c><C-n> :cn<CR>
 nnoremap <C-c>p :cp<CR>
 nnoremap <C-c><C-p> :cp<CR>
-" }}}
 
-" {{{ vsplit幅の変更
+" vsplit幅の変更
 nnoremap <C-w><C-n> 10<C-w><
 nnoremap <C-w>n <C-w><
 nnoremap <C-w><C-w> 10<C-w>>
 nnoremap <C-w>w <C-w>>
-" }}}
 
-" {{{ マーカーでフォールディング
+" マーカーでフォールディング
 set foldmethod=marker
 "set foldopen=all
 "set foldclose=all
-" }}}
 
-" {{{ ディレクトリの時の挙動
+" ディレクトリの時の挙動
 set browsedir=current
 let g:netrw_liststyle = 1
 let g:netrw_http_cmd = "wget -q -O"
-" }}}
 
 " C-a/C-xのインクリメント/デクリメント
 set nrformats-=octal
 set nrformats+=alpha
 
-" {{{ バッファ操作
+" バッファ操作
 " バッファのdiff
 set diffopt=filler,vertical
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
@@ -213,22 +200,19 @@ nnoremap <Esc><C-l> :e!<CR>
 
 " write via sudo
 command! Sudow :w !sudo tee %
-" }}}
 
-" スクロールのオフセット {{{
+" スクロールのオフセット
 set scrolloff=4
-" }}}
 
-" {{{ ステータスライン
+" ステータスライン
 set ruler
 set showcmd
 set laststatus=2
 set statusline=%<%f\ %m%r%h%q%w%{'['.(&fenc!=''?&fenc:&enc).(&bomb=='1'?'(B)':'').']['.&ff.']'}%y%=%l,%c%V,0x%B\ %{noscrollbar#statusline(20,'.','#')}
 
 set cmdheight=1
-" }}}
 
-" {{{ ハイライト関係
+" ハイライト関係
 " search plugin in runtimepath
 function! s:exists_colorscheme(name)
     return !empty(split(globpath(&rtp, 'colors/'.a:name.'.vim'), '\n'))
@@ -249,15 +233,13 @@ nmap <silent> m <Plug>(quickhl-manual-this)
 vmap <silent> m <Plug>(quickhl-manual-this)
 nmap <silent> M <Plug>(quickhl-manual-reset)
 vmap <silent> M <Plug>(quickhl-manual-reset)
-" }}}
 
-" {{{ rcの自動読み込み
+" rcの自動読み込み
 au _Flast BufWritePost $MYVIMRC nested source $MYVIMRC
 au _Flast BufWritePost $MYVIMRC nested BundleClean
 au _Flast BufWritePost $MYVIMRC nested BundleInstall
-" }}}
 
-" {{{ 自動でディレクトリを生成する
+" 自動でディレクトリを生成する
 au _Flast BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'))
 function! s:auto_mkdir(dir)
     if !empty(matchstr(a:dir, '^scp://'))
@@ -267,32 +249,27 @@ function! s:auto_mkdir(dir)
         call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
     endif
 endfunction
-" }}}
 
-" ファイルタイプ別設定 {{{
+" ファイルタイプ別設定
 
-" {{{ vim
+" vim
 au _Flast FileType vim setl shiftwidth=4
 au _Flast FileType vim setl tw=0
 au _Flast FileType vim setl smartindent cinwords=function,if,else,while
-" }}}
 
-" {{{ sh/zsh
+" sh/zsh
 au _Flast FileType sh,zsh setl shiftwidth=4
 au _Flast FileType sh,zsh setl noexpandtab
-" }}}
 
-" {{{ configure/autoconf/Makefile/automake/gitconfig
+" configure/autoconf/Makefile/automake/gitconfig
 au _Flast FileType config,make,automake,gitconfig setl shiftwidth=4
 au _Flast FileType make,gitconfig setl noexpandtab
-" }}}
 
-" {{{ C/C++/D/CUDA
+" C/C++/D/CUDA
 
 " サーチパスの設定
 let $LOCAL_INCLUDE = "/usr/local/include"
 au _Flast FileType c,cpp setl path+=$LOCAL_INCLUDE
-
 au _Flast FileType c,cpp,cuda,d setl expandtab
 
 " C用のインデントを用いる
@@ -316,16 +293,13 @@ au _Flast FileType c,cpp,cuda,d nnoremap <C-k> [[?^\s*$<CR>jz<CR>
 au _Flast FileType c,cpp,cuda,d setl smartindent cinwords=if,else,for,while,do,struct
 au _Flast FileType cpp,cuda,d   setl smartindent cinwords=class,try,catch
 au _Flast FileType d            setl smartindent cinwords=foreach,finaly
-" }}}
 
-" {{{ python
+" python
 " インデント対象のステートメント
 au _Flast FileType python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
-
 au _Flast FileType python setl shiftwidth=4
-" }}}
 
-" {{{ lisp
+" lisp
 au _Flast FileType lisp setl nocindent lisp
 au _Flast FileType lisp setl showmatch
 
@@ -338,30 +312,24 @@ au _Flast FileType lisp noremap vb ?(<CR>v%
 
 " 現在の関数を範囲選択
 au _Flast FileType lisp noremap vf ?defun <CR>?(<CR>v%
-" }}}
 
-" {{{ haskell
+" haskell
 au _Flast FileType haskell setl shiftwidth=2
 let g:haskell_indent_if = 4
-" }}}
 
-" {{{ Ada
+" Ada
 au _Flast FileType ada setl shiftwidth=3 tabstop=3
-" }}}
 
-" {{{ Erlang
+" Erlang
 au _Flast FileType erlang setl shiftwidth=4 tabstop=8 noexpandtab
-" }}}
-
-" }}}
 
 " plugins
 
-" bufexplorer.vim {{{
+" bufexplorer.vim
 nnoremap <silent> <Esc>l :BufExplorer<CR>
-" }}}
+let g:bufExplorerFindActive=0
 
-" textmanip.vim {{{
+" textmanip.vim
 vmap <M-d> <Plug>(textmanip-duplicate-down)
 nmap <M-d> <Plug>(textmanip-duplicate-down)
 
@@ -369,43 +337,36 @@ vmap <C-j> <Plug>(textmanip-move-down)
 vmap <C-k> <Plug>(textmanip-move-up)
 vmap <C-h> <Plug>(textmanip-move-left)
 vmap <C-l> <Plug>(textmanip-move-right)
-" }}}
 
-" {{{ gtags.vim
+" gtags.vim
 " XXX: 最後のスペースはそのまま出力し、そのまま検索文字列を入力するのに必要
 nnoremap <silent> g# :GtagsCursor<CR>
 nnoremap <C-g>/ :Gtags 
 nnoremap <silent> <C-g><C-l> :Gtags -f %<CR>
 nnoremap <C-g>g :Gtags -g 
-" }}}
 
-" rfc.vim {{{
+" rfc.vim
 if expand('%f') =~? 'rfc\d\+'
     setfiletype rfc
 endif
-" }}}
 
-" vim-anzu.vim {{{
+" vim-anzu.vim
 nmap n <Plug>(anzu-n-with-echo)
 nmap N <Plug>(anzu-N-with-echo)
 nmap * <Plug>(anzu-star-with-echo)
 nmap # <Plug>(anzu-sharp-with-echo)
-" }}}
 
-" casejump.vim {{{
+" casejump.vim
 "   http://www.vim.org/scripts/script.php?script_id=511
 nmap ;n ]s
 nmap ;N [s
-" }}}
 
-" gundo {{{
+" gundo
 let g:gundo_close_on_revert = 1
-
 nnoremap <silent> ;u :GundoShow<CR>
-" }}}
 
-" PowerShell {{{
+" PowerShell
 if expand('%f') =~? '.ps1$'
     setfiletype ps1
 endif
-" }}}
+
