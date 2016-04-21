@@ -1,4 +1,4 @@
-# {{{ ヒストリ関係
+# ヒストリ関係
 HISTFILE=~/.zsh_history
 HISTSIZE=1000
 SAVEHIST=1000
@@ -6,12 +6,11 @@ setopt hist_ignore_dups
 setopt hist_reduce_blanks
 setopt inc_append_history
 setopt share_history
-# }}}
 
 # vim キーバインド
 bindkey -v
 
-# {{{ プロンプト
+# プロンプト
 _reset="%b"
 red="%{[31m%}"
 green="%{[32m%}"
@@ -68,7 +67,6 @@ SPROMPT="%r is correct? [n,y,a,e]: "
 
 precmd() { _zshrc__update_prompt }
 chpwd() { _zshrc__update_prompt }
-# }}}
 
 # 表示色関係
 autoload colors
@@ -80,7 +78,7 @@ setopt nolistbeep
 
 setopt list_packed
 
-# {{{ 補完関係
+# 補完関係
 autoload -U compinit
 compinit
 setopt correct
@@ -88,9 +86,8 @@ setopt correctall
 setopt complete_aliases
 setopt noautoremoveslash
 setopt nonomatch
-# }}}
 
-# environments {{{
+# environments
 _zshrc__has_terminfo() {
     local head=$(echo $1 | sed -n 's/^\(.\).*$/\1/p')
     [[ -f /usr/share/terminfo/$head/$1 ]]
@@ -116,9 +113,8 @@ export SVN_EDITOR=vim
 export HGEDITOR=vim
 
 export LANG=en_GB.utf8
-# }}}
 
-# {{{ alias
+# alias
 
 _zshrc__test_binary() {
     [[ -x $(which --skip-alias "$1") ]] >/dev/null 2>&1
@@ -140,7 +136,7 @@ _zshrc__test_and_alias() {
     fi
 }
 
-# {{{ core tools (!= coreutils)
+# core tools (!= coreutils)
 if _zshrc__test_executable dircolors; then
 # GNU ls
     eval "$(dircolors -b $([[ -r ~/.dircolors ]] && echo ~/.dircolors))"
@@ -173,7 +169,6 @@ alias df="df -h"
 alias du="du -ch"
 
 alias pstree="pstree -alpuU"
-# }}}
 
 _zshrc__test_and_alias tmux tmux -2
 
@@ -184,7 +179,7 @@ fi
 
 _zshrc__test_and_alias automake automake -a --foreign
 
-# {{{ Compilers
+# Compilers
 _zshrc__CFLAGS="-Wall -Wextra -pedantic -g -Wno-unused-parameter"
 
 _zshrc__CCFLAGS="-std=gnu99 $_zshrc__CFLAGS -lm"
@@ -208,13 +203,12 @@ _zshrc__NVCCFLAGS="$_zshrc__NVCC_CC_FLAGS $_zshrc__NVCC_LD_FLAGS -Xptxas -v"
 _zshrc__test_and_alias nvcc nvcc $_zshrc__NVCC_BACKEND_CC_PATH $_zshrc__NVCCFLAGS
 
 _zshrc__test_and_alias dmd dmd -w -wi
-# }}}
 
 _zshrc__test_and_alias boost-formatter sed '"s/boost:://g;s/mpl_::bool_<\\(false\\|true\\)>/mpl::\\1_/g;s/\\(mpl_::na, \\)*mpl_::na//g;"'
 
 _zshrc__test_and_alias vim vim -p
 
-# {{{ network tools
+# network tools
 _zshrc__test_and_alias ping ping -A
 _zshrc__test_and_alias ping6 ping6 -A
 
@@ -226,11 +220,9 @@ _zshrc__test_and_alias scp scp -C
 _zshrc__test_and_alias nslookup nslookup -type=ANY
 
 _zshrc__test_and_alias unsafe-ssh ssh -o StrictHostKeyChecking=no
-# }}}
 
 # load site specific aliases
 [ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
-# }}}
 
 # load site specific rc
 [ -f $HOME/.profile ] && . $HOME/.profile
@@ -242,10 +234,9 @@ function import-prefix
 
 import-prefix $HOME/.local
 
-# テトリスをロード {{{
+# テトリスをロード
 autoload -U tetris
 zle -N tetris
-# }}}
 
 # {{{ 長門との会話
 ## see: http://d.hatena.ne.jp/khiker/20070805/zsh_nagato
