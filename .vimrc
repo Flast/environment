@@ -149,8 +149,6 @@ set matchpairs+=<:>
 set enc=utf-8
 set fenc=utf-8
 set fencs=utf-8,iso-2022-jp-3,iso-2022-jp,euc-jp,sjis,utf-16,utf-16le,latin1
-set ff=dos
-set ffs=dos,unix
 
 " タブ関係
 nnoremap <silent> tt :tabedit<CR>
