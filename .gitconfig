@@ -19,6 +19,8 @@
 	amend   = commit --amend
 	fixup   = commit --fixup
 	forward = merge --ff-only
+	discard = checkout --
+	fork    = checkout -b
 	glog    = log --graph --stat
 	slog    = log --stat
 	root    = rev-parse --show-toplevel
