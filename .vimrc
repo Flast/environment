@@ -30,7 +30,7 @@ Bundle 'sjl/gundo.vim'
 Bundle 'textmanip.vim'
 Bundle 't9md/vim-quickhl'
 Bundle 'h1mesuke/vim-alignta'
-Bundle 'thinca/vim-ref'
+"Bundle 'thinca/vim-ref'
 Bundle 'osyo-manga/vim-anzu'
 Bundle 'gcavallanti/vim-noscrollbar'
 
@@ -353,11 +353,6 @@ nmap n <Plug>(anzu-n-with-echo)
 nmap N <Plug>(anzu-N-with-echo)
 nmap * <Plug>(anzu-star-with-echo)
 nmap # <Plug>(anzu-sharp-with-echo)
-
-" casejump.vim
-"   http://www.vim.org/scripts/script.php?script_id=511
-nmap ;n ]s
-nmap ;N [s
 
 " gundo
 let g:gundo_close_on_revert = 1
