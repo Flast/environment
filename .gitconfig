@@ -18,15 +18,13 @@
 [alias]
 	st      = status -uno
 	ci      = commit
-	co      = checkout
 	sm      = submodule
 	amend   = commit --amend
 	fixup   = commit --fixup
 	forward = merge --ff-only
 	discard = checkout --
 	fork    = checkout -b
-	glog    = log --graph --stat
-	slog    = log --stat
+	staged  = diff --cached
 	root    = rev-parse --show-toplevel
 	dir     = rev-parse --git-dir
 #[branch]
