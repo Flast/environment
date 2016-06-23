@@ -20,8 +20,7 @@
 	forward = merge --ff-only
 	discard = checkout --
 	fork    = checkout -b
-	glog    = log --graph --stat
-	slog    = log --stat
+	staged  = diff --cached
 	root    = rev-parse --show-toplevel
 	dir     = rev-parse --git-dir
 #[branch]
