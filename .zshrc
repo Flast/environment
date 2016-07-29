@@ -224,15 +224,15 @@ _zshrc__test_and_alias unsafe-ssh ssh -o StrictHostKeyChecking=no
 # load site specific aliases
 [ -f ~/.zsh_aliases ] && . ~/.zsh_aliases
 
-# load site specific rc
-[ -f $HOME/.profile ] && . $HOME/.profile
-
 function import-prefix
 {
     [[ -d $1 ]] && . $HOME/.local/sbin/import-prefix.sh $1
 }
 
 import-prefix $HOME/.local
+
+# load site specific rc
+[ -f $HOME/.profile ] && . $HOME/.profile
 
 # テトリスをロード
 autoload -U tetris
