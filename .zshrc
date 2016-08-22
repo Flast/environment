@@ -10,6 +10,10 @@ setopt share_history
 # vim キーバインド
 bindkey -v
 
+# <C-q>でコマンドラインスタックに積む
+setopt noflowcontrol # unbind C-s/C-q
+bindkey '^Q' push-line-or-edit
+
 # プロンプト
 _reset="%b"
 red="%{[31m%}"
