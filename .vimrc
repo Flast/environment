@@ -60,9 +60,7 @@ if s:initializing_vundle_handler
     BundleInstall
 endif
 
-if has("syntax")
-    syntax on
-endif
+syntax on
 
 filetype plugin on
 filetype indent on
@@ -263,6 +261,7 @@ au _Flast FileType sh,zsh setl noexpandtab
 au _Flast FileType config,make,automake,gitconfig setl shiftwidth=4
 au _Flast FileType make,gitconfig setl noexpandtab
 
+au _Flast FileType markdown syntax sync fromstart
 " C/C++/D/CUDA
 
 " サーチパスの設定
