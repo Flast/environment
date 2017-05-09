@@ -51,6 +51,7 @@ Bundle 'rfc-syntax'
 Bundle 'Flast/mig.vim'
 Bundle 'stephpy/vim-yaml'
 Bundle 'PProvost/vim-ps1'
+Bundle 'vim-scripts/ShaderHighLight'
 
 " colorscheme
 Bundle 'xoria256.vim'
