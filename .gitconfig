@@ -44,3 +44,5 @@
 	pretty = fuller
 [rerere]
 	enabled = true
+[diff]
+	compactionHeuristic = true
