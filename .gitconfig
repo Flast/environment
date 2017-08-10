@@ -23,6 +23,7 @@
 	staged  = diff --cached
 	root    = rev-parse --show-toplevel
 	dir     = rev-parse --git-dir
+	detach  = !git checkout $(git rev-parse HEAD)
 #[branch]
 #	autosetuprebase = always
 [svn]
