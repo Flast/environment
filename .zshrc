@@ -127,7 +127,11 @@ _zshrc__test_binary() {
 
 _zshrc__test_executable() {
     if [[ -x /usr/bin/which ]]; then
-        ( alias | /usr/bin/which --read-alias --read-functions "$1" ) >/dev/null 2>&1
+        if (alias | /usr/bin/which --read-alias true >/dev/null 2>&1); then
+            (alias | /usr/bin/which --read-alias --read-functions "$1") >/dev/null 2>&1
+        else
+            which "$1" >/dev/null 2>&1
+        fi
     else
         which "$1" >/dev/null 2>&1
     fi
