@@ -151,8 +151,8 @@ set fencs=utf-8,iso-2022-jp-3,iso-2022-jp,euc-jp,sjis,utf-16,utf-16le,latin1
 
 " タブ関係
 nnoremap <silent> tt :tabedit<CR>
-nnoremap <silent> tn :tabnext<CR>
-nnoremap <silent> tp :tabprevious<CR>
+nnoremap <silent> th :tabm -1<CR>
+nnoremap <silent> tl :tabm +1<CR>
 set showtabline=2
 
 " quickfix
