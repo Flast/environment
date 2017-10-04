@@ -11,6 +11,7 @@ setopt share_history
 bindkey -v
 
 # <C-q>でコマンドラインスタックに積む
+# http://qiita.com/ikm/items/1f2c7793944b1f6cc346
 setopt noflowcontrol # unbind C-s/C-q
 bindkey '^Q' push-line-or-edit
 
@@ -126,7 +127,11 @@ _zshrc__test_binary() {
 
 _zshrc__test_executable() {
     if [[ -x /usr/bin/which ]]; then
-        ( alias | /usr/bin/which --read-alias --read-functions "$1" ) >/dev/null 2>&1
+        if (alias | /usr/bin/which --read-alias true >/dev/null 2>&1); then
+            (alias | /usr/bin/which --read-alias --read-functions "$1") >/dev/null 2>&1
+        else
+            which "$1" >/dev/null 2>&1
+        fi
     else
         which "$1" >/dev/null 2>&1
     fi
