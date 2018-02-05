@@ -33,6 +33,7 @@ Bundle 'h1mesuke/vim-alignta'
 "Bundle 'thinca/vim-ref'
 Bundle 'osyo-manga/vim-anzu'
 Bundle 'gcavallanti/vim-noscrollbar'
+Bundle 'AndrewRadev/linediff.vim'
 
 " development utilities
 Bundle 'gtags.vim'
