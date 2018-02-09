@@ -43,3 +43,5 @@
 	enabled = true
 [diff]
 	compactionHeuristic = true
+[commit]
+	gpgSign = true
