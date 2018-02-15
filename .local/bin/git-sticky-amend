@@ -1,0 +1,7 @@
+#!/usr/bin/bash -xe
+
+export GIT_COMMITTER_NAME="$(git log -1 --format="%cn" ${1:-HEAD})"
+export GIT_COMMITTER_EMAIL="$(git log -1 --format="%ce" ${1:-HEAD})"
+export GIT_COMMITTER_DATE="$(git log -1 --format="%cd" ${1:-HEAD})"
+
+git commit --amend -C HEAD
