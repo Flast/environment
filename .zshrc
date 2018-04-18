@@ -74,7 +74,7 @@ precmd() { _zshrc__update_prompt }
 chpwd() { _zshrc__update_prompt }
 
 # 表示色関係
-autoload colors
+autoload -Uz colors
 colors
 
 setopt auto_pushd
@@ -84,7 +84,7 @@ setopt nolistbeep
 setopt list_packed
 
 # 補完関係
-autoload -U compinit
+autoload -Uz compinit
 compinit
 setopt correct
 setopt correctall
