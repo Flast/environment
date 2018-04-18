@@ -92,6 +92,9 @@ setopt complete_aliases
 setopt noautoremoveslash
 setopt nonomatch
 
+CORRECT_IGNORE='_zshrc__*'
+CORRECT_IGNORE_FILE='.*'
+
 # environments
 _zshrc__has_terminfo() {
     local head=$(echo $1 | sed -n 's/^\(.\).*$/\1/p')
