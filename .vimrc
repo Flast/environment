@@ -364,3 +364,5 @@ if expand('%f') =~? '.ps1$'
     setfiletype ps1
 endif
 
+" linediff
+vnoremap <silent> ld :Linediff<CR>
