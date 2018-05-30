@@ -16,7 +16,7 @@
 	ci      = commit
 	sm      = submodule
 	amend   = commit --amend
-	fixup   = commit --fixup
+	fixup   = commit --no-gpg-sign --fixup
 	forward = merge --ff-only
 	discard = checkout --
 	fork    = checkout -b
