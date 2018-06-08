@@ -10,6 +10,8 @@ setopt share_history
 # vim キーバインド
 bindkey -v
 
+bindkey '^R' history-incremental-search-backward
+
 # <C-q>でコマンドラインスタックに積む
 # http://qiita.com/ikm/items/1f2c7793944b1f6cc346
 setopt noflowcontrol # unbind C-s/C-q
