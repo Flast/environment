@@ -365,4 +365,4 @@ if expand('%f') =~? '.ps1$'
 endif
 
 " linediff
-vnoremap <silent> ld :Linediff<CR>
+vnoremap <silent> L :Linediff<CR>
