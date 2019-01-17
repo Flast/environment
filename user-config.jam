@@ -35,7 +35,7 @@ extensions.import "bind" : * ;
 extensions.import path ;
 extensions.import feature ;
 
-path-constant BOOST_ROOT : [ extensions!path.make ~/projects/boost ] ;
+path-constant BOOST_ROOT : [ extensions!path.make ~/boost ] ;
 
 # for header cache
 modules.poke : HCACHEMAXAGE : -1 ;
@@ -187,7 +187,7 @@ extensions!feature.extend-variant release
   ;
 
 extensions!feature.extend-variant debug
-  : <warnings>extra
+  : #<warnings>extra
   ;
 
 constant linker-flags
