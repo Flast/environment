@@ -47,3 +47,5 @@
 	gpgSign = true
 [submodule]
 	fetchjobs = 8
+[gpg]
+	program = gpg2
