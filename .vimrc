@@ -248,6 +248,11 @@ function! s:auto_mkdir(dir)
     endif
 endfunction
 
+" cursor move in cmdline
+cnoremap <C-A> <Home>
+cnoremap <C-F> <Right>
+cnoremap <C-B> <Left>
+
 " ファイルタイプ別設定
 
 " vim
