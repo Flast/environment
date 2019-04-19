@@ -4,9 +4,6 @@
 [submodule ".local/genhttplogs"]
 	path = .local/genhttplogs
 	url = https://gist.github.com/2037301.git
-[submodule ".local/Gyazo-for-Linux"]
-	path = .local/Gyazo-for-Linux
-	url = ../Gyazo-for-Linux/
 [submodule ".local/proposed/check-soa"]
 	path = .local/proposed/check-soa
 	url = https://github.com/bortzmeyer/check-soa.git
