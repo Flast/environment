@@ -327,6 +327,9 @@ au _Flast FileType ada setl shiftwidth=3 tabstop=3
 " Erlang
 au _Flast FileType erlang setl shiftwidth=4 tabstop=8 noexpandtab
 
+" golang
+au _Flast FileType go setl shiftwidth=4 noexpandtab
+
 " plugins
 
 " bufexplorer.vim
