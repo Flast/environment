@@ -123,6 +123,7 @@ export SVN_EDITOR=vim
 export HGEDITOR=vim
 
 export LANG=en_GB.utf8
+export LC_ALL=en_GB.utf8
 
 # alias
 
