@@ -4,12 +4,3 @@
 [submodule ".local/genhttplogs"]
 	path = .local/genhttplogs
 	url = https://gist.github.com/2037301.git
-[submodule ".local/proposed/check-soa"]
-	path = .local/proposed/check-soa
-	url = https://github.com/bortzmeyer/check-soa.git
-[submodule ".local/proposed/netest"]
-	path = .local/proposed/netest
-	url = https://github.com/yuyarin/netest.git
-[submodule ".local/proposed/spark"]
-	path = .local/proposed/spark
-	url = https://github.com/holman/spark.git
