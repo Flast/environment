@@ -1,0 +1,61 @@
+# utilities
+## [[plugins]]
+## repo = 'vim-scripts/NERD_tree'
+[[plugins]]
+repo = 'vim-scripts/bufexplorer.zip'
+[[plugins]]
+repo = 'sjl/gundo.vim'
+[[plugins]]
+repo = 'vim-scripts/textmanip.vim'
+[[plugins]]
+repo = 't9md/vim-quickhl'
+[[plugins]]
+repo = 'h1mesuke/vim-alignta'
+## [[plugins]]
+## repo = 'thinca/vim-ref'
+[[plugins]]
+repo = 'osyo-manga/vim-anzu'
+[[plugins]]
+repo = 'gcavallanti/vim-noscrollbar'
+[[plugins]]
+repo = 'AndrewRadev/linediff.vim'
+
+# development utilities
+[[plugins]]
+repo = 'vim-scripts/gtags.vim'
+[[plugins]]
+repo = 'vim-scripts/casejump.vim'
+[[plugins]]
+repo = 'rhysd/committia.vim'
+[[plugins]]
+repo = 'rhysd/conflict-marker.vim'
+[[plugins]]
+repo = 'mattn/vim-maketable'
+[[plugins]]
+repo = 'hotwatermorning/auto-git-diff'
+
+# syntax/indent
+[[plugins]]
+repo = 'Flast/jam.vim'
+[[plugins]]
+repo = 'danieljames/vim-quickbook'
+# [[plugins]]
+# repo = 'vim-scripts/grass.vim'
+# [[plugins]]
+# repo = 'vim-scripts/haskell.vim'
+# [[plugins]]
+# repo = 'vim-scripts/rfc-syntax'
+# [[plugins]]
+# repo = 'Flast/mig.vim'
+[[plugins]]
+repo = 'stephpy/vim-yaml'
+[[plugins]]
+repo = 'PProvost/vim-ps1'
+[[plugins]]
+repo = 'vim-scripts/ShaderHighLight'
+# [[plugins]]
+# repo = 'datsuns/vim-smv'
+
+# colorscheme
+[[plugins]]
+repo = 'vim-scripts/xoria256.vim'

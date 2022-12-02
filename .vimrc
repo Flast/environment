@@ -3,65 +3,42 @@ aug _Flast
 au!
 aug end
 
-" Vundle
-let s:vundle_dir = $HOME.'/.vim/bundle/vundle'
-let s:initializing_vundle_handler = 0
-let g:vundle_default_git_proto = 'git' "Use git scheme instead of https
-function! s:init_vundle()
-    if !isdirectory(s:vundle_dir)
-        echo "initializing vundle\n"
-        silent exec '!git clone -q git://github.com/gmarik/vundle.git '.s:vundle_dir
-        let s:initializing_vundle_handler = 1
-    endif
-endfunction
-
-call s:init_vundle()
 set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
 
-" Vundle list
-" utilities
-Bundle 'gmarik/vundle'
-"Bundle 'NERD_tree'
-Bundle 'bufexplorer.zip'
-Bundle 'sjl/gundo.vim'
-Bundle 'textmanip.vim'
-Bundle 't9md/vim-quickhl'
-Bundle 'h1mesuke/vim-alignta'
-"Bundle 'thinca/vim-ref'
-Bundle 'osyo-manga/vim-anzu'
-Bundle 'gcavallanti/vim-noscrollbar'
-Bundle 'AndrewRadev/linediff.vim'
+let s:dein_dir      = expand('~/.vim/dein')
+let s:dein_repo_dir = expand('~/.vim/dein.vim')
 
-" development utilities
-Bundle 'gtags.vim'
-Bundle 'casejump.vim'
-Bundle 'rhysd/committia.vim'
-Bundle 'rhysd/conflict-marker.vim'
-Bundle 'mattn/vim-maketable'
-Bundle 'hotwatermorning/auto-git-diff'
-
-" syntax/indent
-Bundle 'Flast/jam.vim'
-Bundle 'danieljames/vim-quickbook'
-Bundle 'grass.vim'
-Bundle 'haskell.vim'
-Bundle 'rfc-syntax'
-Bundle 'Flast/mig.vim'
-Bundle 'stephpy/vim-yaml'
-Bundle 'PProvost/vim-ps1'
-Bundle 'vim-scripts/ShaderHighLight'
-
-" colorscheme
-Bundle 'xoria256.vim'
-
-if s:initializing_vundle_handler
-    echo "initializing\n"
-    BundleInstall
+if &runtimepath !~# '/dein.vim'
+    if !isdirectory(s:dein_repo_dir)
+        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+    endif
+    execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
 
+source ~/.vim/dein/.vimrc
+
+" dein config
+if dein#load_state(s:dein_dir)
+    call dein#begin(s:dein_dir)
+    call dein#load_toml('~/.vim/dein.toml', {'lazy': 0})
+    call dein#end()
+    call dein#save_state()
+endif
+
+" plugin installation check
+if dein#check_install()
+    call dein#install()
+endif
+
+" plugin remove check
+let s:removed_plugins = dein#check_clean()
+if len(s:removed_plugins) > 0
+    call map(s:removed_plugins, "delete(v:val, 'rf')")
+    call dein#recache_runtimepath()
+endif
+
+" Vundle list
 syntax on
 
 filetype plugin on
@@ -231,11 +208,6 @@ nmap <silent> m <Plug>(quickhl-manual-this)
 vmap <silent> m <Plug>(quickhl-manual-this)
 nmap <silent> M <Plug>(quickhl-manual-reset)
 vmap <silent> M <Plug>(quickhl-manual-reset)
-
-" rcの自動読み込み
-au _Flast BufWritePost $MYVIMRC nested source $MYVIMRC
-au _Flast BufWritePost $MYVIMRC nested BundleClean
-au _Flast BufWritePost $MYVIMRC nested BundleInstall
 
 " 自動でディレクトリを生成する
 au _Flast BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'))

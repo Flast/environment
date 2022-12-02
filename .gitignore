@@ -30,3 +30,5 @@
 !/.local/share/gnome3/
 
 !/.vim/colors
+!/.vim/dein.toml
+!/.vim/dein/.vimrc
