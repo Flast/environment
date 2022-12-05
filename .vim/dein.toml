@@ -35,10 +35,10 @@ repo = 'mattn/vim-maketable'
 repo = 'hotwatermorning/auto-git-diff'
 
 # syntax/indent
-[[plugins]]
-repo = 'Flast/jam.vim'
-[[plugins]]
-repo = 'danieljames/vim-quickbook'
+# [[plugins]]
+# repo = 'Flast/jam.vim'
+# [[plugins]]
+# repo = 'danieljames/vim-quickbook'
 # [[plugins]]
 # repo = 'vim-scripts/grass.vim'
 # [[plugins]]
@@ -49,12 +49,14 @@ repo = 'danieljames/vim-quickbook'
 # repo = 'Flast/mig.vim'
 [[plugins]]
 repo = 'stephpy/vim-yaml'
-[[plugins]]
-repo = 'PProvost/vim-ps1'
-[[plugins]]
-repo = 'vim-scripts/ShaderHighLight'
+# [[plugins]]
+# repo = 'PProvost/vim-ps1'
+# [[plugins]]
+# repo = 'vim-scripts/ShaderHighLight'
 # [[plugins]]
 # repo = 'datsuns/vim-smv'
+[[plugins]]
+repo = 'lzap/vim-selinux'
 
 # colorscheme
 [[plugins]]
