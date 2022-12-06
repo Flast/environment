@@ -57,6 +57,8 @@ repo = 'stephpy/vim-yaml'
 # repo = 'datsuns/vim-smv'
 [[plugins]]
 repo = 'lzap/vim-selinux'
+[[plugins]]
+repo = 'hashivim/vim-terraform'
 
 # colorscheme
 [[plugins]]
