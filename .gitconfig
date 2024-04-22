@@ -18,12 +18,9 @@
 	amend   = commit --amend
 	fixup   = commit --no-gpg-sign --fixup
 	forward = merge --ff-only
-	discard = checkout --
-	fork    = checkout -b
 	staged  = diff --cached
 	root    = rev-parse --show-toplevel
 	dir     = rev-parse --git-dir
-	detach  = !git checkout $(git rev-parse HEAD)
 #[branch]
 #	autosetuprebase = always
 [svn]
