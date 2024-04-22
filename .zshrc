@@ -197,8 +197,8 @@ _zshrc__test_and_alias automake automake -a --foreign
 # Compilers
 _zshrc__CFLAGS="-Wall -Wextra -pedantic -g -Wno-unused-parameter"
 
-_zshrc__CCFLAGS="-std=gnu99 $_zshrc__CFLAGS -lm"
-_zshrc__CXXFLAGS="-std=gnu++11 $_zshrc__CFLAGS"
+_zshrc__CCFLAGS="$_zshrc__CFLAGS -lm"
+_zshrc__CXXFLAGS="$_zshrc__CFLAGS"
 
 _zshrc__LDFLAGS="--as-needed"
 _zshrc__LINKERFLAGS="--as-needed" # should be comma separated
