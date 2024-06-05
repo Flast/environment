@@ -27,7 +27,7 @@
 !/.local/sbin/import-prefix.sh
 !/.local/sbin/timedout
 
-!/.local/share/gnome3/
+!/.local/etc
 
 !/.vim/colors
 !/.vim/dein.toml
