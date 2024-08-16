@@ -10,7 +10,8 @@ repo = 'vim-scripts/textmanip.vim'
 [[plugins]]
 repo = 't9md/vim-quickhl'
 [[plugins]]
-repo = 'h1mesuke/vim-alignta'
+# repo = 'h1mesuke/vim-alignta'
+repo = 'junegunn/vim-easy-align'
 ## [[plugins]]
 ## repo = 'thinca/vim-ref'
 [[plugins]]
