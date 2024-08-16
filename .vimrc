@@ -225,6 +225,10 @@ cnoremap <C-A> <Home>
 cnoremap <C-F> <Right>
 cnoremap <C-B> <Left>
 
+" easy align
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
 " ファイルタイプ別設定
 
 " vim
